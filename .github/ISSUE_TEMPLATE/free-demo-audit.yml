@@ -1,0 +1,63 @@
+name: Free Demo Audit Request
+description: Request a $0 bounded audit of one public GitHub repository and one exact revision.
+title: "[Free Demo Audit] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Free Demo Audit — $0
+        Use this form only for a **public GitHub repository**.
+
+        Do not post secrets, tokens, credentials, private source, confidential customer data, or sensitive vulnerability details.
+
+        The demo is limited to one exact revision and up to three findings/observations. It is not a penetration test, certification, compliance attestation, or security guarantee.
+  - type: input
+    id: repository_url
+    attributes:
+      label: Public repository URL
+      description: Public GitHub repository to review.
+      placeholder: https://github.com/owner/repository
+    validations:
+      required: true
+  - type: input
+    id: revision
+    attributes:
+      label: Exact revision
+      description: Commit SHA or tag if known. If omitted, the revision will be frozen before findings are finalized.
+      placeholder: 40-character commit SHA or tag
+    validations:
+      required: false
+  - type: dropdown
+    id: concern
+    attributes:
+      label: Main concern
+      options:
+        - CI / test confidence
+        - Security / authorization boundaries
+        - Architecture / maintainability
+        - AI-generated or AI-assisted changes
+        - Release readiness
+        - General repository baseline
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Public context
+      description: Optional public context or question. Do not include confidential information.
+      placeholder: What are you most uncertain about in this repository?
+    validations:
+      required: false
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Safety and scope acknowledgement
+      options:
+        - label: I confirm the repository is public and this request contains no secrets, credentials, private source, or confidential data.
+          required: true
+        - label: I understand the free demo is limited to one exact revision and up to three findings/observations with no remediation included.
+          required: true
+        - label: I understand this is not a penetration test, certification, compliance attestation, or security/defect-free guarantee.
+          required: true
+        - label: I understand the Free Demo Audit costs $0 and does not represent a paid engagement or collected revenue.
+          required: true
