@@ -1,6 +1,12 @@
 # AI Repository Audit
 
-**Evidence-first review of a public GitHub repository at one exact revision.**
+[![Free Demo](https://img.shields.io/badge/Free_Demo-$0-brightgreen)](https://github.com/icecolor78-dev/ai-repository-audit/issues/new?template=free-demo-audit.yml)
+![Public repositories](https://img.shields.io/badge/Public_repositories-supported-blue)
+![Evidence first](https://img.shields.io/badge/Evidence-first-informational)
+![Exact revision](https://img.shields.io/badge/Audit-exact_revision-blueviolet)
+![Setup pilot](https://img.shields.io/badge/Setup%2FPilot-from_$299-orange)
+
+**Evidence-first AI code and GitHub repository review at one exact revision.**
 
 [**Request a Free Demo Audit — $0 →**](https://github.com/icecolor78-dev/ai-repository-audit/issues/new?template=free-demo-audit.yml)
 
@@ -17,6 +23,21 @@ Submit one public GitHub repository. The demo returns:
 **Best fit:** small teams and solo builders shipping quickly with GitHub, Cursor, Claude Code, Codex, Copilot, or other AI-assisted workflows.
 
 [**Open the Free Demo Audit form →**](https://github.com/icecolor78-dev/ai-repository-audit/issues/new?template=free-demo-audit.yml)
+
+## What we catch that ordinary AI code review can miss
+
+A code review can tell you that code looks reasonable. An evidence audit asks whether the repository can actually support the claim being made about it.
+
+Typical examples include:
+- green CI that is stale, incomplete, skipped, or bound to the wrong revision;
+- tests that execute successfully but do not establish release confidence;
+- authorization boundaries that exist in code but fail closed only on the happy path;
+- AI-assisted changes whose generated evidence cannot be traced to the exact source revision;
+- research or benchmark results that are not reproducible from frozen code, data and configuration;
+- multiple implementations that appear independent but ultimately prove the same underlying assumption;
+- missing evidence silently being interpreted as “probably fine.”
+
+Our rule is simple: **missing evidence stays UNVERIFIED.**
 
 ## Why exact revision matters
 
