@@ -6,6 +6,10 @@
 ![Exact revision](https://img.shields.io/badge/Audit-exact_revision-blueviolet)
 ![Setup pilot](https://img.shields.io/badge/Setup%2FPilot-from_$299-orange)
 
+[![GitHub stars](https://img.shields.io/github/stars/icecolor78-dev/ai-repository-audit?style=flat&logo=github)](https://github.com/icecolor78-dev/ai-repository-audit/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/icecolor78-dev/ai-repository-audit?style=flat&logo=github)](https://github.com/icecolor78-dev/ai-repository-audit/forks)
+[![Last commit](https://img.shields.io/github/last-commit/icecolor78-dev/ai-repository-audit?style=flat&logo=github)](https://github.com/icecolor78-dev/ai-repository-audit/commits/main)
+
 **Evidence-first AI code and GitHub repository review at one exact revision.**
 
 [**Request a Free Demo Audit — $0 →**](https://github.com/icecolor78-dev/ai-repository-audit/issues/new?template=free-demo-audit.yml)
