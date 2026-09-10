@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Read the security boundary first
+    url: https://github.com/icecolor78-dev/ai-repository-audit/blob/main/SECURITY.md
+    about: Do not publish secrets, private source, confidential data, or sensitive vulnerability details in public issues.
