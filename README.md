@@ -44,6 +44,10 @@ The free request creates no payment obligation. Paid work starts only after a se
 - AI-generated or AI-assisted change risks;
 - reproducibility and exact-revision discipline.
 
+## See the audit depth
+
+Start with the short [synthetic sample audit](SAMPLE_AUDIT.md). For a deeper example, see the [sanitized AI-assisted quantitative-system case study](CASE_STUDY_QUANT_SYSTEM.md), which shows how an evidence audit can examine backtest validity, historical-data semantics, cost modeling, strategy independence, trade/no-trade gating and research provenance without publishing the private system's source or proprietary implementation details.
+
 ## How it works
 
 1. [Submit a Free Demo Audit request](https://github.com/icecolor78-dev/ai-repository-audit/issues/new?template=free-demo-audit.yml).
@@ -52,7 +56,7 @@ The free request creates no payment obligation. Paid work starts only after a se
 4. Receive up to three prioritized findings/observations.
 5. Continue only if a deeper paid audit or remediation is useful.
 
-See [HOW_IT_WORKS.md](HOW_IT_WORKS.md), [SAMPLE_AUDIT.md](SAMPLE_AUDIT.md), [FAQ.md](FAQ.md), and [SECURITY.md](SECURITY.md).
+See [HOW_IT_WORKS.md](HOW_IT_WORKS.md), [SAMPLE_AUDIT.md](SAMPLE_AUDIT.md), [CASE_STUDY_QUANT_SYSTEM.md](CASE_STUDY_QUANT_SYSTEM.md), [FAQ.md](FAQ.md), and [SECURITY.md](SECURITY.md).
 
 ## Public-safety boundary
 
