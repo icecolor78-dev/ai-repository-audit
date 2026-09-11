@@ -14,6 +14,9 @@ Their purpose is to demonstrate evidence-first exact-revision auditing without i
 | GitHub Local Actions | `bc25f97d709188cc9d1669763d8d447e418c3634` | [Read demo](GITHUB_LOCAL_ACTIONS_PUBLIC_DEMO.md) |
 | cargo-make | `95dcc545db8cf08af6fbec524e200e7c80b06027` | [Read demo](CARGO_MAKE_PUBLIC_DEMO.md) |
 | flutter-action | `4cab68ce0f1c7c924f688bff4792e044f1aeb30c` | [Read demo](FLUTTER_ACTION_PUBLIC_DEMO.md) |
+| dflook/terraform-github-actions | `bb0ed9a8ea82a38e966e372da328aa881e00fef4` | [Read demo](TERRAFORM_GITHUB_ACTIONS_PUBLIC_DEMO.md) |
+| zizmorcore/zizmor | `bb180c27ef1f03dd231d8ca536fce7bcf458dfa9` | [Read demo](ZIZMOR_PUBLIC_DEMO.md) |
+| GitHubSecurityLab/actions-permissions | `bf82d13b9b10051d224345ab9184f5ede0a94289` | [Read demo](ACTIONS_PERMISSIONS_PUBLIC_DEMO.md) |
 
 ## What these demos prove
 
