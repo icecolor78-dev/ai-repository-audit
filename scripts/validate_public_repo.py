@@ -1,5 +1,7 @@
 from pathlib import Path
 import re
+import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -13,6 +15,9 @@ REQUIRED_FILES = [
     "SECURITY.md",
     "CASE_STUDY_QUANT_SYSTEM.md",
     "CASE_STUDY_LANGUAGE_LEARNING.md",
+    "docs/EVIDENCE_MAPPER_V1.md",
+    "schemas/rem-v1.schema.json",
+    "scripts/validate_rem.py",
 ]
 
 FORBIDDEN_PUBLIC_PATTERNS = [
@@ -79,5 +84,8 @@ for path in MARKDOWN_FILES:
             fail(f"link escapes repository in {path.relative_to(ROOT)}: {target}")
         if not candidate.exists():
             fail(f"broken local link in {path.relative_to(ROOT)}: {target}")
+
+# REM fixtures are public product evidence and must satisfy exact-subject/no-false-PASS invariants.
+subprocess.run([sys.executable, str(ROOT / "scripts" / "validate_rem.py")], cwd=ROOT, check=True)
 
 print("public repository checks passed")

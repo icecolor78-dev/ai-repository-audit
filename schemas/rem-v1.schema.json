@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/icecolor78-dev/ai-repository-audit/schemas/rem-v1.schema.json",
+  "title": "Repository Evidence Mapper v1 Portrait",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "subject", "inventory", "ci", "tests", "security", "release", "supply_chain", "claims", "provenance", "coverage", "sources"],
+  "properties": {
+    "schema_version": {"const": "rem/v1"},
+    "subject": {"$ref": "#/$defs/subject"},
+    "inventory": {"$ref": "#/$defs/inventory"},
+    "ci": {"$ref": "#/$defs/ci"},
+    "tests": {"$ref": "#/$defs/tests"},
+    "security": {"$ref": "#/$defs/security"},
+    "release": {"$ref": "#/$defs/release"},
+    "supply_chain": {"$ref": "#/$defs/supplyChain"},
+    "claims": {"$ref": "#/$defs/claims"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "coverage": {"$ref": "#/$defs/coverage"},
+    "sources": {"type": "array", "items": {"$ref": "#/$defs/source"}}
+  },
+  "$defs": {
+    "evidenceState": {"enum": ["VERIFIED", "PARTIAL", "UNVERIFIED", "CONTRADICTED", "NOT_APPLICABLE"]},
+    "stringArray": {"type": "array", "items": {"type": "string"}},
+    "subject": {
+      "type": "object", "additionalProperties": false,
+      "required": ["provider", "repository", "revision", "default_branch", "observed_at", "visibility"],
+      "properties": {
+        "provider": {"const": "github"},
+        "repository": {"type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$"},
+        "revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "default_branch": {"type": "string", "minLength": 1},
+        "observed_at": {"type": "string", "format": "date-time"},
+        "visibility": {"enum": ["public", "private"]}
+      }
+    },
+    "inventory": {
+      "type": "object", "additionalProperties": false,
+      "required": ["languages", "manifests", "lockfiles", "modules", "generated_or_vendor_boundaries"],
+      "properties": {
+        "languages": {"$ref": "#/$defs/stringArray"}, "manifests": {"$ref": "#/$defs/stringArray"},
+        "lockfiles": {"$ref": "#/$defs/stringArray"}, "modules": {"$ref": "#/$defs/stringArray"},
+        "generated_or_vendor_boundaries": {"$ref": "#/$defs/stringArray"}
+      }
+    },
+    "dimension": {
+      "type": "object", "additionalProperties": false,
+      "required": ["confidence", "unknowns"],
+      "properties": {"confidence": {"$ref": "#/$defs/evidenceState"}, "unknowns": {"$ref": "#/$defs/stringArray"}}
+    },
+    "ci": {
+      "allOf": [{"$ref": "#/$defs/dimension"}],
+      "type": "object",
+      "required": ["confidence", "unknowns", "workflows", "required_checks", "trigger_model", "path_filters", "runtime_matrix", "os_arch_matrix", "conditional_jobs", "aggregate_checks", "exact_subject_runs", "pr_confidence", "main_confidence", "release_confidence", "security_evidence_freshness"],
+      "properties": {
+        "confidence": {"$ref": "#/$defs/evidenceState"}, "unknowns": {"$ref": "#/$defs/stringArray"},
+        "workflows": {"$ref": "#/$defs/stringArray"}, "required_checks": {"$ref": "#/$defs/stringArray"},
+        "trigger_model": {"$ref": "#/$defs/stringArray"}, "path_filters": {"$ref": "#/$defs/stringArray"},
+        "runtime_matrix": {"$ref": "#/$defs/stringArray"}, "os_arch_matrix": {"$ref": "#/$defs/stringArray"},
+        "conditional_jobs": {"$ref": "#/$defs/stringArray"}, "aggregate_checks": {"$ref": "#/$defs/stringArray"},
+        "exact_subject_runs": {"$ref": "#/$defs/stringArray"},
+        "pr_confidence": {"$ref": "#/$defs/evidenceState"}, "main_confidence": {"$ref": "#/$defs/evidenceState"},
+        "release_confidence": {"$ref": "#/$defs/evidenceState"}, "security_evidence_freshness": {"$ref": "#/$defs/evidenceState"}
+      },
+      "additionalProperties": false
+    },
+    "tests": {
+      "type": "object", "additionalProperties": false,
+      "required": ["suites", "types", "subsystem_map", "exact_subject_execution", "confidence", "unknowns"],
+      "properties": {"suites": {"$ref": "#/$defs/stringArray"}, "types": {"$ref": "#/$defs/stringArray"}, "subsystem_map": {"$ref": "#/$defs/stringArray"}, "exact_subject_execution": {"$ref": "#/$defs/stringArray"}, "confidence": {"$ref": "#/$defs/evidenceState"}, "unknowns": {"$ref": "#/$defs/stringArray"}}
+    },
+    "security": {
+      "type": "object", "additionalProperties": false,
+      "required": ["workflow_permissions", "credential_persistence", "action_pinning", "static_analysis", "dependency_security", "secret_scanning_evidence", "freshness", "confidence", "unknowns"],
+      "properties": {"workflow_permissions": {"$ref": "#/$defs/stringArray"}, "credential_persistence": {"$ref": "#/$defs/stringArray"}, "action_pinning": {"$ref": "#/$defs/stringArray"}, "static_analysis": {"$ref": "#/$defs/stringArray"}, "dependency_security": {"$ref": "#/$defs/stringArray"}, "secret_scanning_evidence": {"$ref": "#/$defs/stringArray"}, "freshness": {"$ref": "#/$defs/stringArray"}, "confidence": {"$ref": "#/$defs/evidenceState"}, "unknowns": {"$ref": "#/$defs/stringArray"}}
+    },
+    "release": {
+      "type": "object", "additionalProperties": false,
+      "required": ["workflows", "artifact_handoffs", "source_artifact_binding", "trusted_publishing", "signing_or_attestation", "smoke_or_release_tests", "rollback_or_recovery", "confidence", "unknowns"],
+      "properties": {"workflows": {"$ref": "#/$defs/stringArray"}, "artifact_handoffs": {"$ref": "#/$defs/stringArray"}, "source_artifact_binding": {"$ref": "#/$defs/stringArray"}, "trusted_publishing": {"$ref": "#/$defs/stringArray"}, "signing_or_attestation": {"$ref": "#/$defs/stringArray"}, "smoke_or_release_tests": {"$ref": "#/$defs/stringArray"}, "rollback_or_recovery": {"$ref": "#/$defs/stringArray"}, "confidence": {"$ref": "#/$defs/evidenceState"}, "unknowns": {"$ref": "#/$defs/stringArray"}}
+    },
+    "supplyChain": {
+      "type": "object", "additionalProperties": false,
+      "required": ["dependencies", "update_automation", "sbom", "license_evidence", "provenance", "confidence", "unknowns"],
+      "properties": {"dependencies": {"$ref": "#/$defs/stringArray"}, "update_automation": {"$ref": "#/$defs/stringArray"}, "sbom": {"$ref": "#/$defs/stringArray"}, "license_evidence": {"$ref": "#/$defs/stringArray"}, "provenance": {"$ref": "#/$defs/stringArray"}, "confidence": {"$ref": "#/$defs/evidenceState"}, "unknowns": {"$ref": "#/$defs/stringArray"}}
+    },
+    "claim": {
+      "type": "object", "additionalProperties": false,
+      "required": ["claim", "source_ref", "state", "supporting_refs", "contradicting_refs", "notes"],
+      "properties": {"claim": {"type": "string"}, "source_ref": {"type": "string"}, "state": {"$ref": "#/$defs/evidenceState"}, "supporting_refs": {"$ref": "#/$defs/stringArray"}, "contradicting_refs": {"$ref": "#/$defs/stringArray"}, "notes": {"type": "string"}}
+    },
+    "claims": {"type": "object", "additionalProperties": false, "required": ["items"], "properties": {"items": {"type": "array", "items": {"$ref": "#/$defs/claim"}}}},
+    "provenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ai_assisted_changes", "generated_code", "external_build_or_test_services", "confidence", "unknowns"],
+      "properties": {"ai_assisted_changes": {"$ref": "#/$defs/stringArray"}, "generated_code": {"$ref": "#/$defs/stringArray"}, "external_build_or_test_services": {"$ref": "#/$defs/stringArray"}, "confidence": {"$ref": "#/$defs/evidenceState"}, "unknowns": {"$ref": "#/$defs/stringArray"}}
+    },
+    "coverage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["dimensions", "explicit_unknowns", "excluded_scope"],
+      "properties": {"dimensions": {"$ref": "#/$defs/stringArray"}, "explicit_unknowns": {"$ref": "#/$defs/stringArray"}, "excluded_scope": {"$ref": "#/$defs/stringArray"}}
+    },
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "kind", "subject_revision", "locator", "observed_at", "freshness", "access", "supports", "limits"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["repository_file", "workflow_definition", "workflow_run", "workflow_job", "commit", "status", "release", "issue", "pull_request", "external"]},
+        "subject_revision": {"type": ["string", "null"], "pattern": "^[0-9a-f]{40}$"},
+        "locator": {"type": "string", "minLength": 1}, "observed_at": {"type": "string", "format": "date-time"},
+        "freshness": {"type": "object", "additionalProperties": false, "required": ["state", "reason"], "properties": {"state": {"enum": ["exact", "current-but-not-exact", "historical", "unknown"]}, "reason": {"type": "string"}}},
+        "access": {"type": "object", "additionalProperties": false, "required": ["state"], "properties": {"state": {"enum": ["accessible", "partial", "inaccessible"]}}},
+        "content_digest": {"type": "string"}, "supports": {"$ref": "#/$defs/stringArray"}, "limits": {"$ref": "#/$defs/stringArray"}
+      }
+    }
+  }
+}
