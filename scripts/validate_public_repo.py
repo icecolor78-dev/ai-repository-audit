@@ -10,8 +10,8 @@ REQUIRED_FILES = [
     "CASE_STUDY_QUANT_SYSTEM.md", "CASE_STUDY_LANGUAGE_LEARNING.md", "docs/EVIDENCE_MAPPER_V1.md",
     "schemas/rem-v1.schema.json", "schemas/rem-v1.1.schema.json", "requirements-ci.txt",
     "scripts/validate_rem.py", "scripts/validate_rem_v11.py", "scripts/rem_extract.py", "scripts/rem_extract_exact.py",
-    "scripts/exact_subject.py", "scripts/test_rem_extract.py", "scripts/test_rem_extract_exact.py",
-    "scripts/test_exact_subject.py", "scripts/test_validate_rem_v11.py",
+    "scripts/exact_subject.py", "scripts/claims_exact.py", "scripts/test_rem_extract.py", "scripts/test_rem_extract_exact.py",
+    "scripts/test_exact_subject.py", "scripts/test_claims_exact.py", "scripts/test_validate_rem_v11.py",
 ]
 
 SECRET_PATTERNS = {
@@ -67,6 +67,7 @@ for path in MARKDOWN_FILES:
 subprocess.run([sys.executable, str(ROOT / "scripts" / "validate_rem.py")], cwd=ROOT, check=True)
 subprocess.run([sys.executable, str(ROOT / "scripts" / "test_rem_extract.py")], cwd=ROOT, check=True)
 subprocess.run([sys.executable, str(ROOT / "scripts" / "test_exact_subject.py")], cwd=ROOT, check=True)
+subprocess.run([sys.executable, str(ROOT / "scripts" / "test_claims_exact.py")], cwd=ROOT, check=True)
 subprocess.run([sys.executable, str(ROOT / "scripts" / "test_rem_extract_exact.py")], cwd=ROOT, check=True)
 subprocess.run([sys.executable, str(ROOT / "scripts" / "test_validate_rem_v11.py")], cwd=ROOT, check=True)
 print("public repository checks passed")
