@@ -86,8 +86,9 @@ def render_customer_report(portrait: dict) -> str:
 
     external = portrait.get("external_execution_evidence")
     runtime = portrait.get("runtime_evidence")
-    if external or runtime:
-        lines += ["## Supplied execution/runtime evidence", ""]
+    provenance = portrait.get("artifact_provenance_evidence")
+    if external or runtime or provenance:
+        lines += ["## Supplied execution/runtime/provenance evidence", ""]
         if external:
             lines.append(f"- Execution evidence trust: **{_text(external.get('trust', 'UNVERIFIED'))}**")
             if external.get("statement"):
@@ -95,6 +96,11 @@ def render_customer_report(portrait: dict) -> str:
         if runtime:
             lines.append(f"- Runtime evidence trust: **{_text(runtime.get('trust', 'UNVERIFIED'))}**")
             lines.append(f"- Runtime evidence confidence: **{_text(runtime.get('confidence', 'UNVERIFIED'))}**")
+        if provenance:
+            lines.append(f"- Artifact provenance trust: **{_text(provenance.get('trust', 'UNVERIFIED'))}**")
+            lines.append(f"- Artifact provenance confidence: **{_text(provenance.get('confidence', 'UNVERIFIED'))}**")
+            for item in provenance.get("unknowns", []):
+                lines.append(f"- Provenance boundary: {_text(item)}")
         lines.append("")
 
     lines += [
