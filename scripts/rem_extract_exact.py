@@ -6,10 +6,57 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from claims_exact import extract_readme_claims
-from exact_subject import bind_exact_subject
+from exact_subject import bind_exact_subject, exact_tree_snapshot
 from rem_extract import extract
 from test_depth_exact import profile_tests
+from validate_rem_v11 import EvidenceContractError, validate_document
 from workflow_structured import analyze_workflows
+
+
+def build_exact_rem(
+    scan_root: Path,
+    repository: str,
+    revision: str,
+    default_branch: str,
+    observed_at: str,
+    binding: dict,
+) -> dict:
+    portrait = extract(scan_root, repository, revision, default_branch, observed_at)
+    portrait["schema_version"] = "rem/v1.1"
+    portrait["claims"]["items"] = extract_readme_claims(scan_root)
+    portrait["tests"] = profile_tests(scan_root)
+    ci, security, release = analyze_workflows(scan_root)
+    portrait["ci"] = ci
+    portrait["security"] = security
+    portrait["release"] = release
+
+    if binding.get("exact") is not True:
+        raise EvidenceContractError("integrated exact audit requires a verified Git subject binding")
+
+    reason = (
+        "verified immutable Git-tree subject; "
+        f"tree={binding['git_tree']}; manifest={binding['content_manifest']}"
+    )
+    for source in portrait["sources"]:
+        source["freshness"] = {"state": "exact", "reason": reason}
+        if source["kind"] == "repository_file":
+            source["supports"] = ["claim-source"]
+        elif source["kind"] == "workflow_definition":
+            source["supports"] = ["ci", "security", "release"]
+    portrait["sources"].append({
+        "id": "subject-binding",
+        "kind": "commit",
+        "subject_revision": revision,
+        "locator": "git:tree",
+        "observed_at": observed_at,
+        "freshness": {"state": "exact", "reason": reason},
+        "access": {"state": "accessible"},
+        "content_digest": str(binding["content_manifest"]),
+        "supports": ["subject"],
+        "limits": ["does not prove external runtime or hosted CI execution"],
+    })
+    validate_document(portrait)
+    return portrait
 
 
 def extract_exact(
@@ -19,46 +66,14 @@ def extract_exact(
     default_branch: str,
     observed_at: str,
 ) -> dict:
-    portrait = extract(root, repository, revision, default_branch, observed_at)
-    portrait["schema_version"] = "rem/v1.1"
-    portrait["claims"]["items"] = extract_readme_claims(root)
-    portrait["tests"] = profile_tests(root)
-    ci, security, release = analyze_workflows(root)
-    portrait["ci"] = ci
-    portrait["security"] = security
-    portrait["release"] = release
-
     binding = bind_exact_subject(root, repository, revision)
-    if binding["exact"] is True:
-        reason = (
-            "verified clean Git subject; "
-            f"tree={binding['git_tree']}; manifest={binding['content_manifest']}"
+    if binding.get("exact") is not True:
+        detail = "; ".join(str(item) for item in binding.get("reasons", []))
+        raise EvidenceContractError(f"exact subject binding failed: {detail}")
+    with exact_tree_snapshot(root, revision) as scan_root:
+        return build_exact_rem(
+            scan_root, repository, revision, default_branch, observed_at, binding
         )
-        for source in portrait["sources"]:
-            source["freshness"] = {"state": "exact", "reason": reason}
-        portrait["sources"].append({
-            "id": "subject-binding",
-            "kind": "commit",
-            "subject_revision": revision,
-            "locator": "git:HEAD",
-            "observed_at": observed_at,
-            "freshness": {"state": "exact", "reason": reason},
-            "access": {"state": "accessible"},
-            "content_digest": str(binding["content_manifest"]),
-            "supports": ["repository identity", "exact revision", "clean scanned Git tree"],
-            "limits": ["does not prove external runtime or hosted CI execution"],
-        })
-    else:
-        detail = "; ".join(str(item) for item in binding["reasons"])
-        for source in portrait["sources"]:
-            source["freshness"] = {
-                "state": "unknown",
-                "reason": f"exact subject binding failed: {detail}",
-            }
-        portrait["coverage"]["explicit_unknowns"].append(
-            f"exact subject binding failed: {detail}"
-        )
-    return portrait
 
 
 def main() -> None:

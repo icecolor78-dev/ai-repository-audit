@@ -44,12 +44,14 @@ def bind_claims(rem):
         elif "tests" in c and rem["tests"]["suites"]: refs=["test files/configuration"]
         elif "release" in c and rem["release"]["workflows"]: refs=["release workflow definitions"]
         elif "security" in c and rem["security"]["signals"]: refs=["workflow-security static signals"]
-        if refs:
-            item["state"]="PARTIAL"; item["supporting_refs"]=refs; item["notes"]="Repository evidence supports part of the claim, but runtime/external proof remains required."
+        if refs and item.get("state") == "UNVERIFIED":
+            item["state"]="PARTIAL"
+            item["notes"]="Repository evidence supports part of the claim, but runtime/external proof remains required."
     return rem
 
-def compose(root:Path, repository:str, revision:str, default_branch:str, observed_at:str):
-    rem=bind_claims(extract(root,repository,revision,default_branch,observed_at)); all_files=rows(root); supply,arch,ops,gov,maint=static_layers(root,all_files)
+def compose(root:Path, repository:str, revision:str, default_branch:str, observed_at:str, base_rem:dict|None=None):
+    rem=base_rem if base_rem is not None else bind_claims(extract(root,repository,revision,default_branch,observed_at))
+    all_files=rows(root); supply,arch,ops,gov,maint=static_layers(root,all_files)
     rem["supply_chain"].update(supply); rem["architecture"]=arch; rem["operability"]=ops; rem["governance"]=gov; rem["maintainability"]=maint
     rem.update(extract_wave_a(root)); rem.update(extract_wave_b(root)); rem.update(extract_wave_c(root)); rem.update(extract_wave_d(root))
     findings=[]

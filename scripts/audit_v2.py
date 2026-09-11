@@ -4,11 +4,19 @@ import argparse, json
 from datetime import datetime, timezone
 from pathlib import Path
 from audit_portrait import compose
+from exact_subject import bind_exact_subject, exact_tree_snapshot
+from rem_extract_exact import build_exact_rem
 from v2_assurance_summary import summarize
 
 
 def compose_v2(root:Path,repository:str,revision:str,default_branch:str,observed_at:str)->dict:
-    portrait=compose(root,repository,revision,default_branch,observed_at)
+    binding=bind_exact_subject(root,repository,revision)
+    if binding.get('exact') is not True:
+        detail='; '.join(str(x) for x in binding.get('reasons',[]))
+        raise ValueError(f'exact subject binding failed: {detail}')
+    with exact_tree_snapshot(root,revision) as scan_root:
+        rem=build_exact_rem(scan_root,repository,revision,default_branch,observed_at,binding)
+        portrait=compose(scan_root,repository,revision,default_branch,observed_at,base_rem=rem)
     portrait['assurance_v2']=summarize(portrait)
     portrait['overall_portrait']['version']='2.0'
     portrait['overall_portrait']['assurance_contract_complete']=portrait['assurance_v2']['complete_contract']

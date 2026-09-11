@@ -30,6 +30,7 @@ jobs:
     assert d["overall_portrait"]["confidence"]=="PARTIAL"
     assert d["overall_portrait"]["explicit_unknowns"]
     assert d["overall_portrait"]["remediation"]
+    assert any("STRIDE hypotheses" in x["action"] for x in d["overall_portrait"]["remediation"])
     assert any(x["state"]=="PARTIAL" for x in d["claims"]["items"])
     assert "global_score" not in d and "score" not in d["overall_portrait"]
     assert "privacy guarantee" in d["overall_portrait"]["statement"]

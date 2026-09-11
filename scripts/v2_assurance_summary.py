@@ -6,6 +6,8 @@ DOMAINS=(
  'model_eval','finops','configuration','concurrency','migration','interface','license_ip'
 )
 
+PRESERVED_STATES={'CONTRADICTED','UNVERIFIED','NOT_APPLICABLE'}
+
 def summarize(portrait:dict)->dict:
     domains=[]
     for name in DOMAINS:
@@ -13,9 +15,9 @@ def summarize(portrait:dict)->dict:
         signals=section.get('signals') or []
         confidence=section.get('confidence','UNVERIFIED')
         unknowns=section.get('unknowns') or []
-        if not signals:
-            state='UNVERIFIED'
-        elif confidence=='UNVERIFIED':
+        if confidence in PRESERVED_STATES:
+            state=confidence
+        elif not signals:
             state='UNVERIFIED'
         else:
             state='PARTIAL'
@@ -34,6 +36,6 @@ def summarize(portrait:dict)->dict:
       'missing_domains':missing,
       'complete_contract':not missing,
       'scoring':'NONE',
-      'verdict_rule':'No global PASS is manufactured from domain presence, signal count, or PARTIAL evidence.',
+      'verdict_rule':'No global PASS is manufactured from domain presence, signal count, PARTIAL evidence, or contradicted evidence.',
       'limitations':['Runtime, exploitability, legal/compliance, economic, operational and model-quality claims require corresponding evidence beyond static repository signals.']
     }
