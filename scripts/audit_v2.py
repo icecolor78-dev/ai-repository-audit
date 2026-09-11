@@ -7,6 +7,7 @@ from architecture_exact import analyze_architecture, analyze_contract_drift
 from audit_portrait import compose
 from exact_subject import bind_exact_subject, exact_tree_snapshot
 from external_evidence import apply_bundle
+from release_provenance import apply_provenance
 from rem_extract_exact import build_exact_rem
 from v2_assurance_summary import summarize
 
@@ -32,12 +33,17 @@ def compose_v2(root:Path,repository:str,revision:str,default_branch:str,observed
         portrait['overall_portrait']['explicit_unknowns'].append({'dimension':'contract_drift','detail':item})
     if evidence_bundle is not None:
         portrait=apply_bundle(portrait,evidence_bundle)
+        portrait=apply_provenance(portrait,evidence_bundle)
         portrait['overall_portrait']['explicit_unknowns'].append({
             'dimension':'external_execution_evidence',
             'detail':'SUPPLIED_EXACT evidence is exact-subject validated but caller-supplied; independent provider retrieval/authentication remains unverified.'
         })
         for item in portrait.get('runtime_evidence',{}).get('unknowns',[]):
             row={'dimension':'runtime_evidence','detail':item}
+            if row not in portrait['overall_portrait']['explicit_unknowns']:
+                portrait['overall_portrait']['explicit_unknowns'].append(row)
+        for item in portrait.get('artifact_provenance_evidence',{}).get('unknowns',[]):
+            row={'dimension':'artifact_provenance_evidence','detail':item}
             if row not in portrait['overall_portrait']['explicit_unknowns']:
                 portrait['overall_portrait']['explicit_unknowns'].append(row)
     portrait['overall_portrait']['statement'] += ' V2 completeness means the 15-domain evidence contract is present; it is not a claim that every domain passed.'
