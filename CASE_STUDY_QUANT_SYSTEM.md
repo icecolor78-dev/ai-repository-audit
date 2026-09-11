@@ -12,6 +12,24 @@ The audit question was therefore not “does the code run?” It was:
 
 That framing changed the review from ordinary code review into an evidence audit.
 
+## Overall Portrait v1 dogfood refresh
+
+The current Audit v1 pipeline was re-applied read-only to a fresh exact revision of this private quantitative research system. This public portrait deliberately removes repository identity, revision, source paths, strategies, instruments, parameters, datasets, performance values and reconstruction-enabling architecture.
+
+**Repository Evidence Map:** the subject exposes a large research/verification surface with multiple workflow-defined evidence programs. The audit therefore treats “the repository has extensive CI/research automation” as an inventory fact, not as a single global PASS.
+
+**CI / Test Depth:** repository evidence contains distinct research, holdout, robustness, verification and local-test paths. This is a strong engineering-evidence surface, but each workflow proves only its own exact subject and scope. Historical, prospective, research, verifier and release-like evidence must not be collapsed into one readiness state.
+
+**Workflow Security / Authority:** the strongest positive pattern is separation between research evidence and execution authority. Static evidence repeatedly preserves research-only/fail-closed states. The audit does not infer live authorization from green CI, a successful research workflow, a positive historical result or an accepted engineering candidate.
+
+**Claims vs Evidence:** a fresh exact revision showed frozen experiment semantics before headline outcomes, explicit LONG/SHORT treatment, explicit cost/friction handling, a first-class no-trade/insufficient-data state and tests that missing execution evidence does not become fabricated PnL. These are evidence-quality strengths. They still do not prove profitable edge.
+
+**Provenance / Change Impact:** the research surface is sufficiently large that experiment identity and supersession are themselves audit dimensions. A result must remain bound to its exact experiment definition, data/config identity and evidence program; otherwise a technically valid artifact can be attached to the wrong claim.
+
+**Overall Portrait:** engineering evidence maturity is materially stronger than a typical experimental repository, particularly around fail-closed semantics, exact-subject provenance and separation of research from execution. The dominant remaining uncertainty is empirical rather than syntactic: whether any frozen decision process demonstrates durable net edge under genuinely independent evidence. That remains `UNVERIFIED` until the relevant experiment supplies it.
+
+This refresh demonstrates the new Overall Portrait layers. It is not investment advice, profitability evidence, execution authorization, a penetration test or a security/financial certification.
+
 ## What the review examined
 
 The review treated the repository as a chain of claims that had to remain valid from historical data to a simulated decision and eventually to an executable action. Representative review areas included:
