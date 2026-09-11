@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 import re
 from copy import deepcopy
 from typing import Any
@@ -49,8 +50,13 @@ def _nonnegative_int(value: Any, field: str) -> int:
 
 
 def _nonnegative_number(value: Any, field: str) -> float | int:
-    if not isinstance(value, (int, float)) or isinstance(value, bool) or value < 0:
-        raise ExternalEvidenceError(f"{field} must be a non-negative number")
+    if (
+        not isinstance(value, (int, float))
+        or isinstance(value, bool)
+        or not math.isfinite(value)
+        or value < 0
+    ):
+        raise ExternalEvidenceError(f"{field} must be a finite non-negative number")
     return value
 
 
