@@ -35,3 +35,7 @@ jobs:
         run: python scripts/test_v2_wave_d.py
       - name: Verify Overall Repository Portrait
         run: python scripts/test_audit_portrait.py
+      - name: Verify v2 assurance completion contract
+        run: python scripts/test_v2_assurance_summary.py
+      - name: Verify integrated Audit v2 portrait
+        run: python scripts/test_audit_v2.py
