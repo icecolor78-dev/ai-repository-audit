@@ -30,6 +30,11 @@ PORTRAIT = {
         "statement": "Caller-supplied exact-subject evidence; not independently authenticated.",
     },
     "runtime_evidence": {"trust": "SUPPLIED_EXACT", "confidence": "PARTIAL"},
+    "artifact_provenance_evidence": {
+        "trust": "SUPPLIED_EXACT",
+        "confidence": "PARTIAL",
+        "unknowns": ["Supplied provenance does not establish trusted builder or release authorization."],
+    },
 }
 
 first = render_customer_report(PORTRAIT)
@@ -39,6 +44,8 @@ assert "**BOUNDED_REVIEW**" in first
 assert "CONTRADICTED" in first
 assert "UNVERIFIED" in first
 assert "SUPPLIED_EXACT" in first
+assert "Artifact provenance trust" in first
+assert "trusted builder or release authorization" in first
 assert "global_score" not in first
 assert "**PASS**" not in first
 assert "Exact execution coverage remains UNVERIFIED." in first
