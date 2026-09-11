@@ -59,6 +59,7 @@ def _python_edges(root: Path, path: Path, index: dict[str, str]) -> list[tuple[s
                 prefix = package[: max(0, len(package) - node.level + 1)]
                 base = ".".join([*prefix, *([base] if base else [])])
             if base:
+                names.extend(f"{base}.{alias.name}" for alias in node.names if alias.name != "*")
                 names.append(base)
         for name in names:
             parts = name.split(".")
