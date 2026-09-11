@@ -92,6 +92,15 @@ with tempfile.TemporaryDirectory() as tmp:
                 "source": "https://github.com/example/golden/actions/runs/1",
             }
         ],
+        "artifact_provenance": [
+            {
+                "revision": revision,
+                "artifact_digest": "sha256:" + "b" * 64,
+                "predicate_type": "https://slsa.dev/provenance/v1",
+                "builder_identity": "github-actions:workflow:release",
+                "source": "https://github.com/example/golden/actions/runs/1",
+            }
+        ],
     }
 
     first = compose_v2(root, "example/golden", revision, "main", OBSERVED, bundle)
@@ -103,6 +112,9 @@ with tempfile.TemporaryDirectory() as tmp:
     assert first["external_execution_evidence"]["trust"] == "SUPPLIED_EXACT"
     assert first["runtime_evidence"]["trust"] == "SUPPLIED_EXACT"
     assert first["runtime_evidence"]["confidence"] == "PARTIAL"
+    assert first["artifact_provenance_evidence"]["trust"] == "SUPPLIED_EXACT"
+    assert first["artifact_provenance_evidence"]["confidence"] == "PARTIAL"
+    assert first["artifact_provenance_evidence"]["records"][0]["revision"] == revision
     assert first["overall_portrait"]["verdict"] != "PASS"
 
     serialized = str(first)
@@ -110,6 +122,8 @@ with tempfile.TemporaryDirectory() as tmp:
     assert "@main" in serialized
     assert "missing-schema.yaml" in serialized
     assert "requirements.txt" in serialized
+    assert "sha256:" in serialized
+    assert "github-actions:workflow:release" in serialized
 
     report_first = render_customer_report(first)
     report_second = render_customer_report(second)
@@ -117,6 +131,8 @@ with tempfile.TemporaryDirectory() as tmp:
     assert f"`{revision}`" in report_first
     assert "`example/golden`" in report_first
     assert "SUPPLIED_EXACT" in report_first
+    assert "Artifact provenance trust" in report_first
+    assert "trusted builder identity" in report_first
     assert "**PASS**" not in report_first
     assert "global_score" not in report_first
     assert "Explicit unknowns" in report_first
