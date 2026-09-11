@@ -11,7 +11,9 @@
 [![GitHub forks](https://img.shields.io/github/forks/icecolor78-dev/ai-repository-audit?style=flat&logo=github)](https://github.com/icecolor78-dev/ai-repository-audit/forks)
 [![Last commit](https://img.shields.io/github/last-commit/icecolor78-dev/ai-repository-audit?style=flat&logo=github)](https://github.com/icecolor78-dev/ai-repository-audit/commits/main)
 
-**Evidence-first AI code and GitHub repository review at one exact revision.**
+**Evidence-first GitHub repository audit and AI code audit for CI/CD, software assurance, security evidence and release readiness — bound to one exact revision.**
+
+Use it to audit a public GitHub repository's code-review evidence, CI workflows, test confidence, release provenance and unresolved `UNVERIFIED` areas without turning a green badge into a blanket safety claim.
 
 [**Request a Free Demo Audit — $0 →**](https://github.com/icecolor78-dev/ai-repository-audit/issues/new?template=free-demo-audit.yml)
 
@@ -80,12 +82,12 @@ The tiers are intentionally different: the **Free Demo samples the method**, the
 
 ## Typical review areas
 
-- CI, tests, build and release confidence;
+- CI/CD audit: workflows, test execution, build and release confidence;
 - false-green or stale-evidence patterns;
 - architecture and maintainability risks;
 - authentication/authorization boundaries visible in reviewed source;
 - AI-generated or AI-assisted change risks;
-- reproducibility and exact-revision discipline.
+- software-assurance evidence, reproducibility and exact-revision discipline.
 
 ## See the audit depth
 
