@@ -48,12 +48,19 @@ with tempfile.TemporaryDirectory() as tmp:
       'observed_at':OBSERVED,
       'workflow_runs':[{'name':'CI','revision':rev,'status':'completed','conclusion':'success','source':'https://github.com/example/repo/actions/runs/1'}],
       'test_runs':[{'suite':'unit','revision':rev,'status':'completed','passed':12,'failed':0,'skipped':1,'source':'https://github.com/example/repo/actions/runs/1'}],
-      'release_runs':[]
+      'release_runs':[],
+      'runtime_measurements':[{'kind':'latency','value':88.0,'unit':'ms','sample_count':20,'environment':'public-ci-fixture','revision':rev,'source':'https://github.com/example/repo/actions/runs/2'}],
+      'observability_artifacts':[{'kind':'logs','revision':rev,'source':'https://github.com/example/repo/actions/runs/2'}]
     }
     with_evidence=compose_v2(r,'example/repo',rev,'main',OBSERVED,bundle)
     assert with_evidence['external_execution_evidence']['trust']=='SUPPLIED_EXACT'
     assert with_evidence['ci']['exact_subject_runs']
     assert with_evidence['tests']['exact_subject_execution']
+    assert with_evidence['runtime_evidence']['trust']=='SUPPLIED_EXACT'
+    assert with_evidence['runtime_evidence']['confidence']=='PARTIAL'
+    assert with_evidence['runtime_evidence']['measurements'][0]['unit']=='ms'
+    assert with_evidence['runtime_evidence']['observability_artifacts'][0]['kind']=='logs'
     assert with_evidence['overall_portrait']['verdict']==d['overall_portrait']['verdict']
     assert any(x['dimension']=='external_execution_evidence' for x in with_evidence['overall_portrait']['explicit_unknowns'])
+    assert any(x['dimension']=='runtime_evidence' for x in with_evidence['overall_portrait']['explicit_unknowns'])
 print('Integrated Audit v2 tests passed')

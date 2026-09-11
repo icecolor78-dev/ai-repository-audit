@@ -30,20 +30,33 @@ BUNDLE = {
     "release_runs": [
         {"name": "release", "revision": REV, "conclusion": "success", "artifact_digest": "sha256:" + "b" * 64, "source": SOURCE + "6"},
     ],
+    "runtime_measurements": [
+        {"kind": "latency", "value": 125.5, "unit": "ms", "sample_count": 40, "environment": "public-ci-fixture", "revision": REV, "source": SOURCE + "7"},
+        {"kind": "memory", "value": 96, "unit": "MiB", "sample_count": 3, "environment": "public-ci-fixture", "revision": REV, "source": SOURCE + "8"},
+    ],
+    "observability_artifacts": [
+        {"kind": "logs", "revision": REV, "source": SOURCE + "9"},
+        {"kind": "traces", "revision": REV, "source": SOURCE + "10"},
+    ],
 }
 
 normalized = validate_bundle(BUNDLE, REPO, REV)
 assert normalized["workflow_runs"][1]["conclusion"] == "failure"
+assert normalized["runtime_measurements"][0]["unit"] == "ms"
 result = apply_bundle(BASE, BUNDLE)
 assert result["external_execution_evidence"]["trust"] == "SUPPLIED_EXACT"
 assert len(result["ci"]["exact_subject_runs"]) == 2
 assert "failed=1" in result["tests"]["exact_subject_execution"][0]
 assert "sha256:" in result["release"]["source_artifact_binding"][0]
+assert result["runtime_evidence"]["confidence"] == "PARTIAL"
+assert len(result["runtime_evidence"]["measurements"]) == 2
+assert len(result["runtime_evidence"]["observability_artifacts"]) == 2
 assert result["overall_portrait"]["verdict"] == "BOUNDED_REVIEW"
 assert result["ci"]["confidence"] == "PARTIAL"
 assert "cannot create VERIFIED or global PASS" in result["external_execution_evidence"]["statement"]
+assert "do not prove production representativeness" in result["runtime_evidence"]["unknowns"][0]
 
-for mutation in ("repo", "sha", "source", "cross_repo_source", "count", "premature"):
+for mutation in ("repo", "sha", "source", "cross_repo_source", "count", "premature", "runtime_negative", "runtime_zero_samples", "runtime_unit", "runtime_repo"):
     broken = deepcopy(BUNDLE)
     if mutation == "repo":
         broken["subject"]["repository"] = "other/repo"
@@ -55,9 +68,17 @@ for mutation in ("repo", "sha", "source", "cross_repo_source", "count", "prematu
         broken["workflow_runs"][0]["source"] = "https://github.com/other/repo/actions/runs/9"
     elif mutation == "count":
         broken["test_runs"][0]["failed"] = -1
-    else:
+    elif mutation == "premature":
         broken["workflow_runs"][0]["status"] = "in_progress"
         broken["workflow_runs"][0]["conclusion"] = "success"
+    elif mutation == "runtime_negative":
+        broken["runtime_measurements"][0]["value"] = -1
+    elif mutation == "runtime_zero_samples":
+        broken["runtime_measurements"][0]["sample_count"] = 0
+    elif mutation == "runtime_unit":
+        broken["runtime_measurements"][0]["unit"] = "fast"
+    else:
+        broken["runtime_measurements"][0]["source"] = "https://github.com/other/repo/actions/runs/10"
     try:
         validate_bundle(broken, REPO, REV)
     except ExternalEvidenceError:
