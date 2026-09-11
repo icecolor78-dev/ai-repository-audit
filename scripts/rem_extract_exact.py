@@ -17,6 +17,7 @@ def extract_exact(
     observed_at: str,
 ) -> dict:
     portrait = extract(root, repository, revision, default_branch, observed_at)
+    portrait["schema_version"] = "rem/v1.1"
     binding = bind_exact_subject(root, repository, revision)
     if binding["exact"] is True:
         reason = (
