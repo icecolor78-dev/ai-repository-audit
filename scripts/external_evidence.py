@@ -9,6 +9,8 @@ SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 DIGEST_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 WORKFLOW_STATUS = {"queued", "in_progress", "completed"}
 CONCLUSIONS = {"success", "failure", "cancelled", "skipped", "timed_out", "action_required", "neutral", "stale", "startup_failure", None}
+RUNTIME_KINDS = {"latency", "duration", "cpu", "memory", "throughput", "health", "recovery"}
+UNITS = {"ms", "s", "percent", "bytes", "MiB", "GiB", "req/s", "ops/s", "count"}
 
 
 class ExternalEvidenceError(ValueError):
@@ -46,6 +48,12 @@ def _nonnegative_int(value: Any, field: str) -> int:
     return value
 
 
+def _nonnegative_number(value: Any, field: str) -> float | int:
+    if not isinstance(value, (int, float)) or isinstance(value, bool) or value < 0:
+        raise ExternalEvidenceError(f"{field} must be a non-negative number")
+    return value
+
+
 def validate_bundle(bundle: Any, repository: str, revision: str) -> dict:
     if not isinstance(bundle, dict):
         raise ExternalEvidenceError("evidence bundle must be an object")
@@ -65,108 +73,80 @@ def validate_bundle(bundle: Any, repository: str, revision: str) -> dict:
         "version": "audit-evidence/v1",
         "subject": {"repository": repository, "revision": revision},
         "observed_at": observed_at,
-        "workflow_runs": [],
-        "test_runs": [],
-        "release_runs": [],
+        "workflow_runs": [], "test_runs": [], "release_runs": [],
+        "runtime_measurements": [], "observability_artifacts": [],
     }
 
     for index, item in enumerate(bundle.get("workflow_runs", [])):
-        if not isinstance(item, dict):
-            raise ExternalEvidenceError(f"workflow_runs[{index}] must be an object")
+        if not isinstance(item, dict): raise ExternalEvidenceError(f"workflow_runs[{index}] must be an object")
         name = item.get("name")
-        if not isinstance(name, str) or not name.strip():
-            raise ExternalEvidenceError(f"workflow_runs[{index}].name is required")
-        status = item.get("status")
-        conclusion = item.get("conclusion")
-        if status not in WORKFLOW_STATUS:
-            raise ExternalEvidenceError(f"workflow_runs[{index}].status is unsupported")
-        if conclusion not in CONCLUSIONS:
-            raise ExternalEvidenceError(f"workflow_runs[{index}].conclusion is unsupported")
-        if status != "completed" and conclusion is not None:
-            raise ExternalEvidenceError(f"workflow_runs[{index}] cannot have a conclusion before completion")
-        normalized["workflow_runs"].append({
-            "name": name.strip(),
-            "revision": _exact_revision(item.get("revision"), revision, f"workflow_runs[{index}].revision"),
-            "status": status,
-            "conclusion": conclusion,
-            "source": _public_github_url(item.get("source"), f"workflow_runs[{index}].source", repository),
-        })
+        if not isinstance(name, str) or not name.strip(): raise ExternalEvidenceError(f"workflow_runs[{index}].name is required")
+        status = item.get("status"); conclusion = item.get("conclusion")
+        if status not in WORKFLOW_STATUS: raise ExternalEvidenceError(f"workflow_runs[{index}].status is unsupported")
+        if conclusion not in CONCLUSIONS: raise ExternalEvidenceError(f"workflow_runs[{index}].conclusion is unsupported")
+        if status != "completed" and conclusion is not None: raise ExternalEvidenceError(f"workflow_runs[{index}] cannot have a conclusion before completion")
+        normalized["workflow_runs"].append({"name":name.strip(),"revision":_exact_revision(item.get("revision"),revision,f"workflow_runs[{index}].revision"),"status":status,"conclusion":conclusion,"source":_public_github_url(item.get("source"),f"workflow_runs[{index}].source",repository)})
 
     for index, item in enumerate(bundle.get("test_runs", [])):
-        if not isinstance(item, dict):
-            raise ExternalEvidenceError(f"test_runs[{index}] must be an object")
-        suite = item.get("suite")
-        if not isinstance(suite, str) or not suite.strip():
-            raise ExternalEvidenceError(f"test_runs[{index}].suite is required")
-        status = item.get("status")
-        if status != "completed":
-            raise ExternalEvidenceError(f"test_runs[{index}] must be completed to supply result counts")
-        normalized["test_runs"].append({
-            "suite": suite.strip(),
-            "revision": _exact_revision(item.get("revision"), revision, f"test_runs[{index}].revision"),
-            "status": status,
-            "passed": _nonnegative_int(item.get("passed"), f"test_runs[{index}].passed"),
-            "failed": _nonnegative_int(item.get("failed"), f"test_runs[{index}].failed"),
-            "skipped": _nonnegative_int(item.get("skipped"), f"test_runs[{index}].skipped"),
-            "source": _public_github_url(item.get("source"), f"test_runs[{index}].source", repository),
-        })
+        if not isinstance(item, dict): raise ExternalEvidenceError(f"test_runs[{index}] must be an object")
+        suite=item.get("suite")
+        if not isinstance(suite,str) or not suite.strip(): raise ExternalEvidenceError(f"test_runs[{index}].suite is required")
+        if item.get("status") != "completed": raise ExternalEvidenceError(f"test_runs[{index}] must be completed to supply result counts")
+        normalized["test_runs"].append({"suite":suite.strip(),"revision":_exact_revision(item.get("revision"),revision,f"test_runs[{index}].revision"),"status":"completed","passed":_nonnegative_int(item.get("passed"),f"test_runs[{index}].passed"),"failed":_nonnegative_int(item.get("failed"),f"test_runs[{index}].failed"),"skipped":_nonnegative_int(item.get("skipped"),f"test_runs[{index}].skipped"),"source":_public_github_url(item.get("source"),f"test_runs[{index}].source",repository)})
 
     for index, item in enumerate(bundle.get("release_runs", [])):
-        if not isinstance(item, dict):
-            raise ExternalEvidenceError(f"release_runs[{index}] must be an object")
-        name = item.get("name")
-        if not isinstance(name, str) or not name.strip():
-            raise ExternalEvidenceError(f"release_runs[{index}].name is required")
-        conclusion = item.get("conclusion")
-        if conclusion not in CONCLUSIONS - {None}:
-            raise ExternalEvidenceError(f"release_runs[{index}].conclusion is unsupported")
-        row = {
-            "name": name.strip(),
-            "revision": _exact_revision(item.get("revision"), revision, f"release_runs[{index}].revision"),
-            "conclusion": conclusion,
-            "source": _public_github_url(item.get("source"), f"release_runs[{index}].source", repository),
-        }
-        digest = item.get("artifact_digest")
+        if not isinstance(item, dict): raise ExternalEvidenceError(f"release_runs[{index}] must be an object")
+        name=item.get("name")
+        if not isinstance(name,str) or not name.strip(): raise ExternalEvidenceError(f"release_runs[{index}].name is required")
+        conclusion=item.get("conclusion")
+        if conclusion not in CONCLUSIONS-{None}: raise ExternalEvidenceError(f"release_runs[{index}].conclusion is unsupported")
+        row={"name":name.strip(),"revision":_exact_revision(item.get("revision"),revision,f"release_runs[{index}].revision"),"conclusion":conclusion,"source":_public_github_url(item.get("source"),f"release_runs[{index}].source",repository)}
+        digest=item.get("artifact_digest")
         if digest is not None:
-            if not isinstance(digest, str) or not DIGEST_RE.fullmatch(digest):
-                raise ExternalEvidenceError(f"release_runs[{index}].artifact_digest must be sha256:<64 lowercase hex>")
-            row["artifact_digest"] = digest
+            if not isinstance(digest,str) or not DIGEST_RE.fullmatch(digest): raise ExternalEvidenceError(f"release_runs[{index}].artifact_digest must be sha256:<64 lowercase hex>")
+            row["artifact_digest"]=digest
         normalized["release_runs"].append(row)
+
+    for index,item in enumerate(bundle.get("runtime_measurements", [])):
+        if not isinstance(item,dict): raise ExternalEvidenceError(f"runtime_measurements[{index}] must be an object")
+        kind=item.get("kind"); unit=item.get("unit"); environment=item.get("environment")
+        if kind not in RUNTIME_KINDS: raise ExternalEvidenceError(f"runtime_measurements[{index}].kind is unsupported")
+        if unit not in UNITS: raise ExternalEvidenceError(f"runtime_measurements[{index}].unit is unsupported")
+        if not isinstance(environment,str) or not environment.strip(): raise ExternalEvidenceError(f"runtime_measurements[{index}].environment is required")
+        normalized["runtime_measurements"].append({
+            "kind":kind,"value":_nonnegative_number(item.get("value"),f"runtime_measurements[{index}].value"),"unit":unit,
+            "sample_count":_nonnegative_int(item.get("sample_count"),f"runtime_measurements[{index}].sample_count"),
+            "environment":environment.strip(),"revision":_exact_revision(item.get("revision"),revision,f"runtime_measurements[{index}].revision"),
+            "source":_public_github_url(item.get("source"),f"runtime_measurements[{index}].source",repository),
+        })
+        if normalized["runtime_measurements"][-1]["sample_count"] == 0: raise ExternalEvidenceError(f"runtime_measurements[{index}].sample_count must be positive")
+
+    for index,item in enumerate(bundle.get("observability_artifacts", [])):
+        if not isinstance(item,dict): raise ExternalEvidenceError(f"observability_artifacts[{index}] must be an object")
+        kind=item.get("kind")
+        if kind not in {"logs","metrics","traces","health","recovery"}: raise ExternalEvidenceError(f"observability_artifacts[{index}].kind is unsupported")
+        normalized["observability_artifacts"].append({"kind":kind,"revision":_exact_revision(item.get("revision"),revision,f"observability_artifacts[{index}].revision"),"source":_public_github_url(item.get("source"),f"observability_artifacts[{index}].source",repository)})
 
     return normalized
 
 
 def apply_bundle(portrait: dict, bundle: Any) -> dict:
-    repository = portrait["subject"]["repository"]
-    revision = portrait["subject"]["revision"]
-    data = validate_bundle(bundle, repository, revision)
-    result = deepcopy(portrait)
-
-    workflow_rows = [
-        f"SUPPLIED_EXACT name={row['name']} status={row['status']} conclusion={row['conclusion']} source={row['source']}"
-        for row in data["workflow_runs"]
-    ]
-    test_rows = [
-        f"SUPPLIED_EXACT suite={row['suite']} passed={row['passed']} failed={row['failed']} skipped={row['skipped']} source={row['source']}"
-        for row in data["test_runs"]
-    ]
-    release_rows = []
-    for row in data["release_runs"]:
-        if "artifact_digest" in row:
-            release_rows.append(
-                f"SUPPLIED_EXACT revision={revision} artifact={row['artifact_digest']} source={row['source']}"
-            )
-
-    result["ci"]["exact_subject_runs"] = sorted(set(result["ci"].get("exact_subject_runs", []) + workflow_rows))
-    result["tests"]["exact_subject_execution"] = sorted(set(result["tests"].get("exact_subject_execution", []) + test_rows))
-    result["release"]["source_artifact_binding"] = sorted(set(result["release"].get("source_artifact_binding", []) + release_rows))
-    result["external_execution_evidence"] = {
-        "trust": "SUPPLIED_EXACT",
-        "subject": data["subject"],
-        "observed_at": data["observed_at"],
-        "workflow_runs": data["workflow_runs"],
-        "test_runs": data["test_runs"],
-        "release_runs": data["release_runs"],
-        "statement": "Evidence is caller-supplied and exact-subject validated. It is not independently fetched or cryptographically authenticated by this audit path and cannot create VERIFIED or global PASS by presence alone.",
+    repository=portrait["subject"]["repository"]; revision=portrait["subject"]["revision"]
+    data=validate_bundle(bundle,repository,revision); result=deepcopy(portrait)
+    workflow_rows=[f"SUPPLIED_EXACT name={r['name']} status={r['status']} conclusion={r['conclusion']} source={r['source']}" for r in data["workflow_runs"]]
+    test_rows=[f"SUPPLIED_EXACT suite={r['suite']} passed={r['passed']} failed={r['failed']} skipped={r['skipped']} source={r['source']}" for r in data["test_runs"]]
+    release_rows=[f"SUPPLIED_EXACT revision={revision} artifact={r['artifact_digest']} source={r['source']}" for r in data["release_runs"] if "artifact_digest" in r]
+    result["ci"]["exact_subject_runs"]=sorted(set(result["ci"].get("exact_subject_runs",[])+workflow_rows))
+    result["tests"]["exact_subject_execution"]=sorted(set(result["tests"].get("exact_subject_execution",[])+test_rows))
+    result["release"]["source_artifact_binding"]=sorted(set(result["release"].get("source_artifact_binding",[])+release_rows))
+    result["runtime_evidence"]={
+        "trust":"SUPPLIED_EXACT","measurements":data["runtime_measurements"],"observability_artifacts":data["observability_artifacts"],
+        "confidence":"PARTIAL" if data["runtime_measurements"] or data["observability_artifacts"] else "UNVERIFIED",
+        "unknowns":["caller-supplied measurements do not prove production representativeness, SLA compliance, measurement completeness, or independent authenticity"],
+    }
+    result["external_execution_evidence"]={
+        "trust":"SUPPLIED_EXACT","subject":data["subject"],"observed_at":data["observed_at"],"workflow_runs":data["workflow_runs"],"test_runs":data["test_runs"],"release_runs":data["release_runs"],
+        "runtime_measurements":data["runtime_measurements"],"observability_artifacts":data["observability_artifacts"],
+        "statement":"Evidence is caller-supplied and exact-subject validated. It is not independently fetched or cryptographically authenticated by this audit path and cannot create VERIFIED or global PASS by presence alone.",
     }
     return result
