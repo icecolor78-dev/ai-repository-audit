@@ -1,5 +1,6 @@
 # AI Repository Audit
 
+[![Public repository checks](https://github.com/icecolor78-dev/ai-repository-audit/actions/workflows/public-repo-checks.yml/badge.svg?branch=main)](https://github.com/icecolor78-dev/ai-repository-audit/actions/workflows/public-repo-checks.yml)
 [![Free Demo](https://img.shields.io/badge/Free_Demo-$0-brightgreen)](https://github.com/icecolor78-dev/ai-repository-audit/issues/new?template=free-demo-audit.yml)
 ![Public repositories](https://img.shields.io/badge/Public_repositories-supported-blue)
 ![Evidence first](https://img.shields.io/badge/Evidence-first-informational)
