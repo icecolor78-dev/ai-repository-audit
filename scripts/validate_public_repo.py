@@ -20,7 +20,7 @@ SECRET_PATTERNS = {
     "AWS access key": re.compile(r"\bAKIA[0-9A-Z]{16}\b"),
     "Slack token": re.compile(r"\bxox[baprs]-[A-Za-z0-9-]{10,}\b"),
 }
-INTERNAL_MARKERS = ("private://", "internal://")
+INTERNAL_MARKERS = ("private" + "://", "internal" + "://")
 TEXT_SUFFIXES = {".md", ".py", ".yml", ".yaml", ".txt", ".json", ".toml"}
 TEXT_FILES = [
     p for p in ROOT.rglob("*")
