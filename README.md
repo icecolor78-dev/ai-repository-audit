@@ -74,6 +74,8 @@ The tiers are intentionally different: the **Free Demo samples the method**, the
 
 Start with the short [synthetic sample audit](SAMPLE_AUDIT.md).
 
+See the [independent public demo audits](docs/demos/README.md) for exact-revision examples on Flask, Vite, Terraform, and pyca/cryptography. These are unsolicited public demonstrations, not customer engagements or upstream endorsements.
+
 For deeper examples:
 - [sanitized AI-assisted quantitative-system case study](CASE_STUDY_QUANT_SYSTEM.md) — backtest validity, historical-data semantics, cost modeling, strategy independence, trade/no-trade gating and research provenance;
 - [sanitized adaptive language-learning case study](CASE_STUDY_LANGUAGE_LEARNING.md) — mastery evidence, architecture-vs-runtime drift, script/phoneme boundaries, speech-recognition claims, adaptive scheduling and the difference between a verified core and a complete product.
