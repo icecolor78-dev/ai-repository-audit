@@ -1,396 +1,293 @@
 # AI Repository Audit Roadmap
 
-This roadmap turns the service from a strong evidence-first review method into a repeatable repository-wide audit system. It is intentionally capability-oriented: new repositories/programs are created only when a genuinely separate ownership boundary, lifecycle, API, or data model is proven necessary.
+This roadmap describes the public AI Repository Audit capability system as it exists now and the remaining evidence-depth work. It is capability-oriented: a new repository or product is created only when a genuinely separate ownership boundary, lifecycle, API, or data model is proven necessary.
 
 ## Product objective
 
-Build an audit that answers, at one exact source revision:
+At one exact source revision, answer:
 
 1. What does this repository claim?
 2. What evidence actually exists?
-3. What is verified, weakly supported, stale, contradictory, or UNVERIFIED?
+3. What is VERIFIED, PARTIAL, UNVERIFIED, CONTRADICTED, or NOT_APPLICABLE?
 4. What can fail despite green CI?
 5. What should be fixed first, and what evidence would prove the fix?
 
-The target output is an **Overall Repository Portrait**, not a longer generic code review.
+The target output is an **Overall Repository Portrait**, not a generic code review or an opaque score.
 
-## Phase A — benchmark real audit depth
+## Current implementation boundary
 
-Run governed read-only dogfood on materially different public repositories and compare results using the same evidence model.
+The current public product already includes a deterministic bounded implementation of the core repository portrait path:
 
-Current benchmark archetypes:
-- backend / API;
-- frontend / tooling;
-- infrastructure / release-heavy;
-- security-sensitive / cryptographic library;
-- existing internal sanitized quantitative-system and adaptive-learning case studies.
+- exact repository/revision binding to an immutable Git tree;
+- Repository Evidence Mapper v1.1 and evidence-contract validation;
+- exact README claim preservation from common README formats;
+- structured GitHub Actions inspection;
+- bounded CI, workflow-security and release signals;
+- test/config discovery without silent list truncation;
+- explicit evidence states and fail-closed VERIFIED semantics;
+- 15 Audit v2 assurance domains;
+- integrated Overall Repository Portrait;
+- adversarial/self-quality regression coverage.
 
-For every subject capture:
-- exact repository + commit SHA;
-- evidence categories inspected;
-- material findings by severity and confidence;
-- UNVERIFIED / NOT_TESTED areas;
-- actionable remediation steps;
-- evidence-depth and coverage limitations;
-- false-positive / low-value observations rejected during review.
+These capabilities are **not** equivalent to runtime proof, penetration testing, certification, vulnerability absence, production readiness, legal clearance, or successful release execution. Static evidence remains static evidence.
 
-Do not treat external public dogfood as customer work, endorsement, certification, or penetration testing.
+## Public evidence boundary
 
-## Phase B — Repository Evidence Mapper
+This public repository uses only public-source evidence plus synthetic material created specifically for this public product. Private/internal-derived evidence is not republished here even after anonymization, sanitization, aggregation, paraphrase, or generalization.
 
-Create a repository-intelligence layer that maps the exact subject before verdicting.
+Public dogfood and case material must therefore be reproducible from named public sources or be explicitly synthetic.
 
-Target map:
+## Capability map A-S
 
-`repository -> languages -> packages/modules -> workflows -> tests -> security checks -> release paths -> dependencies -> public claims -> evidence -> UNVERIFIED gaps`
+### Phase A — Public dogfood / benchmark depth — ACTIVE / ADVANCED
 
-Initial implementation should reuse existing Audit/PatchSeal capabilities. Do not create a separate program unless later evidence proves a distinct long-lived product boundary.
+Public exact-revision demonstration audits exist across multiple repository archetypes. Continue expanding only when new public subjects add a meaningful benchmark dimension.
 
-### Evidence Mapper outputs
-- repository inventory and architecture surface;
-- CI/workflow inventory;
-- test inventory and test-to-subsystem map;
-- release/publish path inventory;
-- dependency and lockfile inventory;
-- security-check inventory;
-- documentation/claim inventory;
-- exact-revision evidence references;
-- confidence and evidence freshness;
-- explicit unknowns.
+Residual work:
+- rerun selected public demos against newer engine revisions when benchmark comparability matters;
+- maintain explicit false-positive/low-value rejection notes;
+- build cross-demo reproducibility metrics without treating GitHub stars or maintainer reaction as product-quality proof.
 
-## Phase C — CI Evidence Profiler
+### Phase B — Repository Evidence Mapper — IMPLEMENTED v1.1
 
-Go beyond "CI exists".
+Current bounded implementation maps repository inventory, workflows, tests, release/security signals, public claims, evidence references and explicit unknowns.
 
-Analyze:
-- required vs optional checks;
-- branch/path filters and skipped changes;
-- conditional jobs and success aggregators;
-- runtime/language/version matrix;
-- OS/architecture matrix;
-- cancellation/retry semantics;
-- permissions and token scope;
-- action pinning and mutable references;
-- release-only checks;
-- stale/wrong-SHA evidence risks;
-- whether green status can be achieved while meaningful work is skipped.
+Residual work:
+- deepen typed evidence relationships;
+- expand ecosystem-aware dependency and contract evidence without weakening exact-subject binding.
 
-Output: CI confidence profile + false-green risk assessment.
+### Phase C — CI Evidence Profiler — IMPLEMENTED STATIC BASELINE
 
-## Phase D — Test Depth Map
+Current implementation inspects triggers, path filters, matrices, conditions, dependency/aggregate structure, permissions, action refs, reusable-workflow refs and obvious statically skipped jobs.
 
-Classify and map evidence from:
-- unit tests;
-- integration tests;
-- end-to-end tests;
-- smoke tests;
-- contract/schema tests;
-- property-based tests;
-- fuzzing;
-- security tests;
-- compatibility tests;
-- migration/upgrade tests;
-- performance/regression tests;
-- release artifact tests.
+Residual work:
+- ingest exact-subject workflow-run/job conclusions when supplied through an explicit trusted evidence path;
+- compare configured checks with actual branch/ruleset enforcement;
+- model cancellation/retry and matrix-leg execution evidence.
 
-Map each meaningful subsystem to VERIFIED / PARTIAL / UNVERIFIED and explain why.
+A green workflow definition or observed static graph never proves the jobs actually executed.
 
-## Phase E — Release and Provenance Audit
+### Phase D — Test Depth Map — IMPLEMENTED DISCOVERY BASELINE
 
-Analyze:
-- build reproducibility;
-- source-to-artifact binding;
-- release workflow authorization;
-- artifact handoff between jobs;
-- trusted publishing / OIDC usage;
-- signing/provenance when present;
-- action/dependency pinning;
-- package/image publication paths;
-- release smoke tests;
-- rollback/recovery path;
-- whether release evidence is exact-subject bound.
+Current implementation discovers recognized repository-visible test/config evidence, preserves large test trees without arbitrary truncation, classifies bounded test types and separates discovery from execution.
 
-Output: release-confidence and provenance portrait.
+Residual work:
+- bind suites to actual CI/runtime execution evidence;
+- improve subsystem/test membership mapping;
+- measure coverage/depth only when corresponding evidence exists.
 
-## Phase F — Workflow Security Analysis
+File presence is not test execution proof.
 
-Audit GitHub automation and adjacent repository workflows for:
-- excessive permissions;
-- credential persistence;
-- unsafe untrusted-input interpolation;
-- pull_request_target / privileged-context hazards;
-- third-party actions and mutable tags;
-- secret exposure surfaces;
-- artifact poisoning / cross-job trust;
-- unsafe cache use;
-- shell injection risk;
-- dangerous release triggers;
-- missing fail-closed behavior.
+### Phase E — Release and Provenance Audit — PARTIAL / IMPLEMENTED STATIC BASELINE
 
-Reuse PatchSeal security/verdict authority rather than creating a competing security verdict engine.
+Current implementation identifies bounded release/publisher signals, artifact handoffs, OIDC permission signals, signing/attestation vocabulary, smoke/verification and rollback/recovery signals while avoiding simple negated-word false positives.
 
-## Phase G — Supply-chain and Dependency Health
+Residual work:
+- source-to-artifact digest binding;
+- artifact identity/attestation verification;
+- exact release execution evidence;
+- trusted-publisher identity and authorization proof;
+- reproducible build evidence.
 
-Analyze:
-- direct/transitive dependency inventory;
-- lockfile presence and reproducibility;
-- dependency pinning/update policy;
-- dependency provenance where available;
-- stale/abandoned dependencies;
-- known vulnerability evidence where accessible;
-- SBOM presence/quality;
-- license inventory and incompatible-license risk;
-- generated/vendor code boundaries;
-- package-manager integrity settings.
+### Phase F — Workflow Security Analysis — IMPLEMENTED STATIC BASELINE
 
-This should evolve toward the existing SupplySeal direction rather than become a duplicate program.
+Current implementation covers scoped/broad permissions, credential persistence signals, untrusted event interpolation, privileged PR context, mutable action references, reusable workflows and secret forwarding.
 
-## Phase H — Claims vs Evidence Matrix
+Residual work:
+- called reusable-workflow transitive analysis;
+- cache/artifact trust-flow analysis;
+- runtime/effective token and enforcement evidence where accessible.
 
-Extract material claims from README/docs/release notes/configuration and compare them with actual evidence.
+A static signal is not a proven exploit.
 
-Examples:
-- "supports X" -> compatibility evidence?
-- "secure" -> what security evidence exists?
-- "tested on Y" -> exact current CI matrix?
-- "production ready" -> release/recovery/observability evidence?
-- "reproducible" -> source/data/config/artifact binding?
+### Phase G — Supply-chain and Dependency Health — PARTIAL
 
-Every claim is classified as:
-- VERIFIED;
-- PARTIAL;
-- UNVERIFIED;
-- CONTRADICTED;
-- NOT_APPLICABLE.
+Current implementation inventories manifests/lockfiles, update automation, SBOM/license signals and generated/vendor boundaries at a bounded static level.
 
-This is a core differentiator of the product.
+Residual work:
+- resolved direct/transitive dependency inventory;
+- integrity/hash evidence;
+- known-vulnerability evidence where a current source is accessible;
+- license compatibility evidence;
+- dependency provenance and freshness;
+- ecosystem-specific reproducibility checks.
 
-## Phase I — AI-assisted Change Provenance
+This capability should integrate with the portfolio's existing accepted supply-chain assurance direction rather than create a duplicate authority.
 
-When AI-assisted development evidence is visible, analyze:
-- AI co-author/session provenance;
-- exact source revision affected;
-- whether human review boundaries are visible;
-- whether tests cover changed semantics;
-- generated-code boundaries;
-- prompt/session evidence only when intentionally public and relevant;
-- whether AI-generated changes receive weaker or stronger verification than equivalent human changes.
+### Phase H — Claims vs Evidence Matrix — IMPLEMENTED BASELINE
 
-Do not claim AI authorship where repository evidence does not support it.
+Current implementation preserves exact claim wording and separates claim-source from proof-source. VERIFIED claims require exact accessible supporting evidence and fail closed on contradictions/self-support patterns covered by the evidence contract.
 
-## Phase J — Architecture and Change-impact Analysis
+Residual work:
+- richer typed claim-to-evidence semantics;
+- docs/release/config claim discovery beyond README where source semantics can remain deterministic;
+- automated contradiction matching only where false-positive risk is acceptably bounded.
 
-Build an evidence-backed change/architecture portrait:
-- module/package boundaries;
-- dependency direction;
-- public/internal API boundaries;
-- high-coupling components;
-- cycles where detectable;
-- high-change hotspots;
-- blast radius of changes;
-- ownership/boundary violations;
-- duplicated implementation authority;
-- migration/compatibility layers;
-- testability and failure-isolation gaps.
+### Phase I — AI-assisted Change Provenance — PARTIAL
 
-Avoid generic architecture scoring unsupported by repository evidence.
+The evidence model represents AI-assisted changes, generated code and external build/test services when explicit evidence exists.
 
-## Phase K — API / Contract Drift
+Residual work:
+- deterministic public provenance extraction from supported public metadata;
+- review-boundary and changed-semantics evidence;
+- avoid any authorship inference unsupported by repository evidence.
 
-Where applicable, compare:
-- code vs public API docs;
-- schemas vs consumers;
-- CLI flags/configuration vs docs/examples;
-- generated API specs vs implementation;
-- migration/version compatibility contracts;
-- deprecation policy vs actual behavior/tests.
+### Phase J — Architecture and Change-impact Analysis — PARTIAL
 
-Output explicit drift and compatibility-risk findings.
+Current implementation provides repository/path/API boundary signals and explicit unknowns.
 
-## Phase L — Documentation vs Runtime/Build Reality
+Residual work:
+- language-aware dependency graph;
+- dependency direction and cycles;
+- change hotspots from public history;
+- blast-radius/change-impact evidence;
+- duplicated authority and compatibility-layer signals.
 
-Check whether:
-- documented install commands are reproducible;
-- examples compile/run where feasible;
-- documented versions match supported versions;
-- configuration examples match actual schema/defaults;
-- README badges/current claims correspond to exact/current evidence;
-- docs-only paths bypass important validation unexpectedly.
+No generic architecture score should be produced without evidence.
 
-## Phase M — Performance and Resource Evidence
+### Phase K — API / Contract Drift — EARLY / PARTIAL
 
-When relevant and evidence exists, inspect:
-- benchmark infrastructure;
-- regression thresholds;
-- latency/throughput claims;
-- memory/CPU/resource constraints;
-- benchmark reproducibility;
-- noisy or non-comparable benchmark design;
-- performance checks in CI/release gates.
+Current portrait can identify API/schema-like surfaces, but a full producer/consumer drift engine is not yet implemented.
 
-Missing performance evidence is UNVERIFIED, not an assumed defect.
+Residual work:
+- compare supported public schemas/specifications with consumers/implementation where deterministic parsing is available;
+- configuration/CLI/docs drift;
+- compatibility and deprecation evidence.
 
-## Phase N — Observability and Operability
+### Phase L — Documentation vs Runtime/Build Reality — PARTIAL
 
-For deployable/services repositories, inspect evidence for:
-- structured logging;
-- metrics;
-- tracing;
-- health/readiness signals;
-- error reporting;
-- graceful degradation;
-- alerting/runbook hooks;
-- rollback/recovery evidence;
-- migration safety;
-- operational failure modes.
+Claims, workflow and repository evidence provide a bounded baseline.
 
-This capability should converge with the existing RuntimeSeal direction where appropriate.
+Residual work:
+- reproducible documented install/build/example checks when safe execution evidence is supplied;
+- version/configuration example drift;
+- docs-only validation-bypass evidence.
 
-## Phase O — Maintainability and Hotspot Analysis
+### Phase M — Performance and Resource Evidence — EARLY / EVIDENCE-ORIENTED
 
-Analyze repository-visible maintainability evidence:
-- change concentration/hotspots;
-- complexity and duplication;
-- oversized modules;
+Current assurance model can represent static benchmark/performance signals, but it does not manufacture runtime measurements.
+
+Residual work:
+- ingest exact benchmark artifacts;
+- compare thresholds and baselines;
+- preserve environment/tool identity and noise limits.
+
+### Phase N — Observability and Operability — PARTIAL STATIC BASELINE
+
+Current portrait detects bounded repository-visible operational signals such as health/runbook/deployment-related files.
+
+Residual work:
+- structured logging/metrics/tracing evidence;
+- exact recovery/rollback exercise evidence;
+- runtime health and graceful-degradation evidence;
+- operational failure-mode verification.
+
+This should integrate with the existing accepted runtime-assurance direction rather than duplicate it.
+
+### Phase O — Maintainability and Hotspots — PARTIAL STATIC BASELINE
+
+Current implementation identifies bounded large-file and generated/vendor signals.
+
+Residual work:
+- change concentration from public history;
+- complexity/duplication evidence;
 - brittle test coupling;
-- ownership concentration / bus-factor signals where public history supports them;
-- stale/dead code indicators;
-- dependency on generated or vendored internals;
-- repeated defect-prone boundaries.
+- stale/dead-code signals with calibrated confidence.
 
-Do not infer team quality from contributor counts alone.
+Contributor count alone is not a team-quality metric.
 
-## Phase P — Policy and Governance Evidence
+### Phase P — Policy and Governance Evidence — PARTIAL STATIC BASELINE
 
-Inspect:
-- branch/ruleset protections where accessible;
-- required checks;
-- CODEOWNERS/review policies;
-- security policy;
-- contribution/release rules;
-- dependency update automation;
-- privilege boundaries;
-- evidence retention/provenance practices;
-- whether repository policy matches actual enforcement.
+Current portrait inspects repository-visible governance files and keeps platform enforcement separate.
 
-Reuse existing engineering-governance/PolicySeal direction rather than create a twin.
+Residual work:
+- branch/ruleset/required-check evidence ingestion where accessible;
+- compare documented policy with actual enforcement;
+- retention/provenance enforcement evidence.
 
-## Phase Q — Overall Repository Portrait
+For this repository specifically, current GitHub state does **not** establish required-status-check enforcement; successful CI must not be described as a guaranteed merge gate until platform configuration proves it.
 
-Full Audit final output should converge on one structured portrait:
+This capability should integrate with the existing accepted policy-assurance direction rather than create a duplicate authority.
 
-### 1. Exact subject
-Repository, exact SHA, audit scope, timestamp/evidence freshness.
+### Phase Q — Overall Repository Portrait — IMPLEMENTED / INTEGRATED
 
-### 2. Executive verdict
-PASS / HOLD / REJECT / ESCALATE only where the applicable evidence model supports such a verdict; otherwise explicitly state bounded confidence and UNVERIFIED areas.
+Current Audit v2 composes the exact validated REM v1.1 subject with all 15 assurance domains and produces findings, explicit unknowns, remediation and a bounded verdict.
 
-### 3. Evidence scorecard
-At minimum:
-- CI confidence;
-- test depth;
-- security/workflow posture;
-- release/provenance confidence;
-- supply-chain health;
-- architecture/maintainability;
-- claims-vs-evidence consistency;
-- runtime/operability when applicable.
+Residual work is depth, not creation of another portrait engine.
 
-Scores must never hide missing evidence. Numeric scoring, if introduced, must preserve the underlying evidence state and cannot convert UNVERIFIED into PASS.
+### Phase R — Auditor Self-Quality Controls — IMPLEMENTED BASELINE / ACTIVE
 
-### 4. Findings
-All material findings in agreed scope, not an arbitrary fixed count.
+Current regression suite includes adversarial cases for exact-subject binding, ignored/untracked scan isolation, symlink boundaries, wrong-subject evidence, self-support/contradiction handling, reusable workflows, explicit empty permissions, statically skipped jobs, release-word false positives, large test trees and test-path false positives.
 
-Each finding should include:
-- severity;
-- confidence;
-- exact evidence reference;
-- why it matters;
-- affected boundary;
-- remediation;
-- verification required after remediation.
+Residual work:
+- more golden public subjects;
+- repeatability/determinism measurement;
+- duplicate-finding and severity-calibration tests;
+- information-isolation tests across independent public/synthetic audit subjects.
 
-### 5. UNVERIFIED map
-Explicitly list important things the audit could not prove.
+### Phase S — Customer-facing Report Experience — WORKING BASELINE
 
-### 6. Remediation roadmap
-Prioritized by risk, evidence value and implementation cost/complexity where reasonably inferable.
+Current public repository provides executive explanations, evidence-state semantics, demo reports, Free Demo intake and differentiated paid-service scopes.
 
-## Phase R — Quality controls for the auditor itself
+Residual work:
+- cleaner structured Full Audit export;
+- evidence matrix/finding filters;
+- printable/shareable report generation when customer evidence justifies the investment.
 
-The audit system must test itself for:
-- false positives;
-- duplicate findings;
-- unsupported severity inflation;
-- stale-SHA references;
-- claim/evidence misbinding;
-- missing negative evidence;
-- hallucinated files/tests/workflows;
-- generic advice that is not repository-specific;
-- inconsistent results across repeated review of the same exact subject;
-- information leakage between audited repositories.
+Do not build heavy dashboard/SaaS infrastructure before real demand requires it.
 
-Maintain benchmark/golden cases as the method matures.
+## Audit v2 assurance domains
 
-## Phase S — Customer-facing report experience
+The integrated v2 portrait contains 15 explicit assurance domains:
 
-After technical depth is proven, improve presentation:
-- concise executive summary;
-- evidence matrix;
-- severity/confidence filtering;
-- finding-to-file/workflow references;
-- remediation checklist;
-- printable/exportable Full Audit report;
-- clear Free Demo vs Full Audit boundary;
-- sanitized shareable summary when requested.
+**Wave A** — Threat Model; Data Privacy; Agent Safety; Identity & Access.  
+**Wave B** — Resilience; Incident Readiness; External Dependency Failure; Auditability & Forensics.  
+**Wave C** — Model Evaluation; FinOps; Configuration; Concurrency.  
+**Wave D** — Migration; Interface / Contract Compatibility; License / IP.
 
-Do not add heavy dashboard/SaaS infrastructure before real demand justifies it.
+Presence of all 15 domains means the evidence contract is structurally complete. It does **not** mean all 15 domains passed.
 
-## Program ownership / anti-twin decision
+## Ownership / anti-twin rule
 
-No new standalone repository is approved by this roadmap today.
+No new standalone repository is approved by this roadmap.
 
-Default ownership remains:
-- PatchSeal: verification/security/quality/verdict composition;
-- local-test-hub: reproducible bounded execution;
-- Evidence-Vault: durable exact-subject evidence;
-- GitHub-integration: GitHub transport/provider boundary;
-- Platform-Control-Plane: customer/tenant/commercial surface;
-- AI-Orchestrator: workflow coordination;
-- future SupplySeal / RuntimeSeal / PolicySeal directions: extend their already-defined domains when real demand requires them.
+AI Repository Audit remains the public audit/product surface. When deeper execution, supply-chain, runtime, policy, evidence-storage, GitHub-provider or control-plane capability is required, integrate with the portfolio's existing accepted canonical capability direction instead of creating a second independently writable implementation.
 
-A future `Repository Intelligence`, `RepoSeal`, or `Evidence Mapper` program may be proposed only if dogfood demonstrates all of the following:
-1. a distinct stable domain boundary;
-2. a separate lifecycle/API/data model;
-3. enough functionality that embedding it in PatchSeal/Audit creates harmful coupling;
-4. no duplication of an existing canonical owner;
-5. a concrete customer/product reason to pay the complexity cost.
+New extraction into a separate product is justified only by a stable independent domain boundary, lifecycle/API/data model, clear anti-duplication case and concrete customer value.
 
-Until then, implement Repository Evidence Mapper as an Audit/PatchSeal capability layer.
+## Residual execution order
 
-## Near-term execution order
+1. Deepen supply-chain/dependency evidence.
+2. Deepen architecture/change-impact and contract drift.
+3. Add explicit external exact-run evidence ingestion for CI/test/release where trustworthy inputs are available.
+4. Deepen source-to-artifact provenance and release verification.
+5. Expand runtime/performance/observability evidence adapters without manufacturing runtime proof.
+6. Expand auditor golden cases and repeatability metrics.
+7. Improve Full Audit report/export experience only to the level justified by real use.
+8. Reassess product depth and commercial scope using real public audits and customer evidence.
 
-1. Complete public dogfood benchmark batch (#14).
-2. Produce a cross-dogfood gap matrix.
-3. Define Repository Evidence Mapper v1 schema/output.
-4. Add CI Evidence Profiler and Test Depth Map.
-5. Add Claims-vs-Evidence Matrix.
-6. Add Release/Provenance + Workflow Security analysis.
-7. Add Dependency/Supply-chain health.
-8. Add Architecture/Change-impact + API/docs drift.
-9. Add Runtime/Performance/Observability where applicable.
-10. Build Overall Repository Portrait v1.
-11. Add auditor self-quality/golden-case checks.
-12. Validate on additional real repositories before increasing automation/price based on assumed value.
+## Definition of trustworthy progress
+
+A capability is not complete because code exists or CI is green. Progress requires, as applicable:
+- exact-subject implementation;
+- deterministic tests including negative/adversarial cases;
+- current evidence bound to the candidate SHA;
+- no false PASS or evidence-state loss;
+- public-origin-only publication compliance;
+- explicit static/runtime/external-evidence boundary;
+- integration impact review;
+- truthful documentation.
 
 ## Success criteria
 
-The roadmap is successful when repeated audits on different repository archetypes consistently produce:
+The roadmap succeeds when repeated audits on materially different public repository archetypes consistently produce:
 - repository-specific findings rather than generic advice;
-- exact-revision evidence traceability;
-- explicit UNVERIFIED areas;
-- useful remediation steps;
-- comparable evidence-depth metrics;
+- exact-revision traceability;
+- explicit UNVERIFIED and CONTRADICTED states;
+- useful remediation and verification requirements;
+- reproducible evidence-depth outputs;
 - low false-positive/duplicate rates;
 - materially deeper Full Audit output than Free Demo;
-- enough demonstrated value to support the owner-approved pricing escalation policy using real customer evidence.
+- customer evidence that the resulting audit is worth paying for.
+
+Until customer evidence exists, pricing and market demand remain hypotheses rather than technical facts.
