@@ -27,5 +27,7 @@ jobs:
         run: python scripts/test_rem_extract.py
       - name: Verify Wave A assurance extraction
         run: python scripts/test_v2_wave_a.py
+      - name: Verify Wave B resilience extraction
+        run: python scripts/test_v2_wave_b.py
       - name: Verify Overall Repository Portrait
         run: python scripts/test_audit_portrait.py
