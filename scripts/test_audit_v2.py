@@ -16,9 +16,10 @@ with tempfile.TemporaryDirectory() as tmp:
     git(r,'config','user.name','Audit Test')
     git(r,'remote','add','origin','https://github.com/example/repo.git')
     (r/'src').mkdir(); (r/'migrations').mkdir(); (r/'api').mkdir(); (r/'docs').mkdir(); (r/'evals').mkdir()
-    (r/'src/app.py').write_text('OAuth RBAC tenant webhook database retry backoff idempotency audit_log correlation_id tool confirmation untrusted content max_steps max_tokens transaction lock environment config retention delete TLS backup restore rollback kill switch',encoding='utf-8')
+    (r/'src/app.py').write_text('from src import helper\nOAuth = RBAC = tenant = webhook = database = retry = backoff = idempotency = audit_log = correlation_id = tool = confirmation = untrusted = content = max_steps = max_tokens = transaction = lock = environment = config = retention = delete = TLS = backup = restore = rollback = kill_switch = True\n',encoding='utf-8')
+    (r/'src/helper.py').write_text('VALUE = 1\n',encoding='utf-8')
     (r/'migrations/001.sql').write_text('ALTER TABLE users ADD COLUMN handle TEXT; rollback backward compatible',encoding='utf-8')
-    (r/'api/openapi.yaml').write_text('openapi: 3.1.0\n',encoding='utf-8')
+    (r/'api/openapi.yaml').write_text('openapi: 3.1.0\ncomponents:\n  schemas:\n    User:\n      type: object\n',encoding='utf-8')
     (r/'docs/NOTICE.md').write_text('SPDX-License-Identifier: MIT\nThird-party attribution source origin',encoding='utf-8')
     (r/'evals/frozen.md').write_text('frozen holdout evaluation grader leakage hallucination regression model version',encoding='utf-8')
     (r/'README.md').write_text('CI tests security release\n',encoding='utf-8')
@@ -36,5 +37,8 @@ with tempfile.TemporaryDirectory() as tmp:
     assert d['overall_portrait']['assurance_contract_complete'] is True
     assert 'not a claim that every domain passed' in d['overall_portrait']['statement']
     assert 'global_score' not in d
+    assert 'src/app.py -> src/helper.py' in d['architecture']['dependency_edges']
+    assert d['contract_drift']['surfaces']==['api/openapi.yaml']
+    assert any(x['dimension']=='contract_drift' for x in d['overall_portrait']['explicit_unknowns'])
     assert all('ignored.yml' not in str(value) for value in d.values())
 print('Integrated Audit v2 tests passed')
