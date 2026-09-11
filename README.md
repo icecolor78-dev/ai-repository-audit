@@ -71,7 +71,13 @@ The free request creates no payment obligation. Paid work starts only after a se
 
 ## See the audit depth
 
-Start with the short [synthetic sample audit](SAMPLE_AUDIT.md). For a deeper example, see the [sanitized AI-assisted quantitative-system case study](CASE_STUDY_QUANT_SYSTEM.md), which shows how an evidence audit can examine backtest validity, historical-data semantics, cost modeling, strategy independence, trade/no-trade gating and research provenance without publishing the private system's source or proprietary implementation details.
+Start with the short [synthetic sample audit](SAMPLE_AUDIT.md).
+
+For deeper examples:
+- [sanitized AI-assisted quantitative-system case study](CASE_STUDY_QUANT_SYSTEM.md) — backtest validity, historical-data semantics, cost modeling, strategy independence, trade/no-trade gating and research provenance;
+- [sanitized adaptive language-learning case study](CASE_STUDY_LANGUAGE_LEARNING.md) — mastery evidence, architecture-vs-runtime drift, script/phoneme boundaries, speech-recognition claims, adaptive scheduling and the difference between a verified core and a complete product.
+
+Both case studies deliberately omit private source and reconstruction-enabling implementation details.
 
 ## How it works
 
@@ -81,7 +87,7 @@ Start with the short [synthetic sample audit](SAMPLE_AUDIT.md). For a deeper exa
 4. Receive up to three prioritized findings/observations.
 5. Continue only if a deeper paid audit or remediation is useful.
 
-See [HOW_IT_WORKS.md](HOW_IT_WORKS.md), [SAMPLE_AUDIT.md](SAMPLE_AUDIT.md), [CASE_STUDY_QUANT_SYSTEM.md](CASE_STUDY_QUANT_SYSTEM.md), [FAQ.md](FAQ.md), and [SECURITY.md](SECURITY.md).
+See [HOW_IT_WORKS.md](HOW_IT_WORKS.md), [SAMPLE_AUDIT.md](SAMPLE_AUDIT.md), [CASE_STUDY_QUANT_SYSTEM.md](CASE_STUDY_QUANT_SYSTEM.md), [CASE_STUDY_LANGUAGE_LEARNING.md](CASE_STUDY_LANGUAGE_LEARNING.md), [FAQ.md](FAQ.md), and [SECURITY.md](SECURITY.md).
 
 ## Public-safety boundary
 
