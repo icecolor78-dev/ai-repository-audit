@@ -24,8 +24,8 @@ No signup, domain, paid infrastructure, or private repository access is required
 The current public automated path is intentionally narrower than the full expert audit service.
 
 **Automated / deterministic in REM v1.1:**
-- clean GitHub repository + exact `HEAD` SHA + Git tree binding;
-- tracked-content manifest identity;
+- exact GitHub repository + `HEAD` SHA + immutable Git-tree binding;
+- Git-tree content manifest identity;
 - exact README claim text preservation without inferring truth from documentation;
 - structured GitHub Actions trigger/job/step inspection;
 - bounded workflow-security review signals with `pull_request_target` treated as context, not a vulnerability by itself;
@@ -98,9 +98,9 @@ The auditor must distinguish a **potential review signal** from a **proven defec
 
 ## Why exact revision matters
 
-Branches move. A green result on yesterday's `main` is not evidence about today's code. The exact-bound automated path verifies repository identity, `HEAD`, clean working-tree state and Git tree identity before repository-file evidence receives exact freshness.
+Branches move. A green result on yesterday's `main` is not evidence about today's code. The exact-bound automated path verifies repository identity, requested `HEAD`, and the selected Git tree before repository-file evidence receives exact freshness. Repository content for the exact automated path is materialized from Git objects belonging to that tree rather than from unrelated ignored/untracked working-tree files.
 
-If that binding cannot be established, the evidence remains explicitly unverified rather than borrowing confidence from a caller-supplied SHA.
+If that binding cannot be established, the audit fails closed rather than borrowing confidence from a caller-supplied SHA.
 
 ## Founding offers
 
@@ -121,11 +121,13 @@ The free request creates no payment obligation. Paid work starts only after a se
 4. Separate verified facts, partial evidence, unknowns and contradictions.
 5. Receive prioritized findings/observations and continue only if a deeper paid audit or remediation is useful.
 
-See [HOW_IT_WORKS.md](HOW_IT_WORKS.md), [SAMPLE_AUDIT.md](SAMPLE_AUDIT.md), [CASE_STUDY_QUANT_SYSTEM.md](CASE_STUDY_QUANT_SYSTEM.md), [CASE_STUDY_LANGUAGE_LEARNING.md](CASE_STUDY_LANGUAGE_LEARNING.md), [FAQ.md](FAQ.md), and [SECURITY.md](SECURITY.md).
+See [HOW_IT_WORKS.md](HOW_IT_WORKS.md), [SAMPLE_AUDIT.md](SAMPLE_AUDIT.md), [FAQ.md](FAQ.md), and [SECURITY.md](SECURITY.md).
 
-## Public-safety boundary
+## Public-origin-only boundary
 
-The Free Demo Audit is for **public repositories only**. Do not submit secrets, credentials, private source, confidential customer data, private repository URLs, or sensitive vulnerability details in a public issue.
+The public repository and Free Demo Audit use only **public-source evidence** plus clearly synthetic fixtures/material created specifically for this public product. Private or internal evidence is not republished here even after anonymization, sanitization, aggregation, paraphrase, or generalization.
+
+Do not submit secrets, credentials, private source, confidential customer data, private repository URLs, or sensitive vulnerability details in a public issue.
 
 This service is not a penetration test, certification, compliance attestation, legal opinion, security guarantee, or guarantee that software is defect-free.
 
