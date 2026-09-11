@@ -23,3 +23,7 @@ jobs:
           python-version: "3.12"
       - name: Validate public repository
         run: python scripts/validate_public_repo.py
+      - name: Verify REM extractor
+        run: python scripts/test_rem_extract.py
+      - name: Verify Overall Repository Portrait
+        run: python scripts/test_audit_portrait.py
