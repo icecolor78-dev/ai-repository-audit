@@ -12,7 +12,7 @@ REQUIRED_FILES = [
     "scripts/validate_rem.py", "scripts/validate_rem_v11.py", "scripts/rem_extract.py", "scripts/rem_extract_exact.py",
     "scripts/exact_subject.py", "scripts/claims_exact.py", "scripts/workflow_structured.py", "scripts/test_depth_exact.py", "scripts/supply_chain_exact.py", "scripts/architecture_exact.py", "scripts/external_evidence.py", "scripts/render_customer_report.py",
     "scripts/test_rem_extract.py", "scripts/test_rem_extract_exact.py", "scripts/test_exact_subject.py",
-    "scripts/test_claims_exact.py", "scripts/test_workflow_structured.py", "scripts/test_test_depth_exact.py", "scripts/test_supply_chain_exact.py", "scripts/test_architecture_exact.py", "scripts/test_external_evidence.py", "scripts/test_render_customer_report.py", "scripts/test_validate_rem_v11.py",
+    "scripts/test_claims_exact.py", "scripts/test_workflow_structured.py", "scripts/test_test_depth_exact.py", "scripts/test_supply_chain_exact.py", "scripts/test_architecture_exact.py", "scripts/test_external_evidence.py", "scripts/test_render_customer_report.py", "scripts/test_golden_e2e.py", "scripts/test_validate_rem_v11.py",
 ]
 
 FORBIDDEN_PRIVATE_DERIVED_FILES = {
@@ -84,6 +84,7 @@ subprocess.run([sys.executable, str(ROOT / "scripts" / "test_supply_chain_exact.
 subprocess.run([sys.executable, str(ROOT / "scripts" / "test_architecture_exact.py")], cwd=ROOT, check=True)
 subprocess.run([sys.executable, str(ROOT / "scripts" / "test_external_evidence.py")], cwd=ROOT, check=True)
 subprocess.run([sys.executable, str(ROOT / "scripts" / "test_render_customer_report.py")], cwd=ROOT, check=True)
+subprocess.run([sys.executable, str(ROOT / "scripts" / "test_golden_e2e.py")], cwd=ROOT, check=True)
 subprocess.run([sys.executable, str(ROOT / "scripts" / "test_rem_extract_exact.py")], cwd=ROOT, check=True)
 subprocess.run([sys.executable, str(ROOT / "scripts" / "test_validate_rem_v11.py")], cwd=ROOT, check=True)
 print("public repository checks passed")
