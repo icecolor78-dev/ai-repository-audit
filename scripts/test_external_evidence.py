@@ -56,7 +56,21 @@ assert result["ci"]["confidence"] == "PARTIAL"
 assert "cannot create VERIFIED or global PASS" in result["external_execution_evidence"]["statement"]
 assert "do not prove production representativeness" in result["runtime_evidence"]["unknowns"][0]
 
-for mutation in ("repo", "sha", "source", "cross_repo_source", "count", "premature", "runtime_negative", "runtime_zero_samples", "runtime_unit", "runtime_repo"):
+for mutation in (
+    "repo",
+    "sha",
+    "source",
+    "cross_repo_source",
+    "count",
+    "premature",
+    "runtime_negative",
+    "runtime_nan",
+    "runtime_pos_inf",
+    "runtime_neg_inf",
+    "runtime_zero_samples",
+    "runtime_unit",
+    "runtime_repo",
+):
     broken = deepcopy(BUNDLE)
     if mutation == "repo":
         broken["subject"]["repository"] = "other/repo"
@@ -73,6 +87,12 @@ for mutation in ("repo", "sha", "source", "cross_repo_source", "count", "prematu
         broken["workflow_runs"][0]["conclusion"] = "success"
     elif mutation == "runtime_negative":
         broken["runtime_measurements"][0]["value"] = -1
+    elif mutation == "runtime_nan":
+        broken["runtime_measurements"][0]["value"] = float("nan")
+    elif mutation == "runtime_pos_inf":
+        broken["runtime_measurements"][0]["value"] = float("inf")
+    elif mutation == "runtime_neg_inf":
+        broken["runtime_measurements"][0]["value"] = float("-inf")
     elif mutation == "runtime_zero_samples":
         broken["runtime_measurements"][0]["sample_count"] = 0
     elif mutation == "runtime_unit":
