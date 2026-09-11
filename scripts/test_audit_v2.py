@@ -41,4 +41,19 @@ with tempfile.TemporaryDirectory() as tmp:
     assert d['contract_drift']['surfaces']==['api/openapi.yaml']
     assert any(x['dimension']=='contract_drift' for x in d['overall_portrait']['explicit_unknowns'])
     assert all('ignored.yml' not in str(value) for value in d.values())
+
+    bundle={
+      'version':'audit-evidence/v1',
+      'subject':{'repository':'example/repo','revision':rev},
+      'observed_at':OBSERVED,
+      'workflow_runs':[{'name':'CI','revision':rev,'status':'completed','conclusion':'success','source':'https://github.com/example/repo/actions/runs/1'}],
+      'test_runs':[{'suite':'unit','revision':rev,'status':'completed','passed':12,'failed':0,'skipped':1,'source':'https://github.com/example/repo/actions/runs/1'}],
+      'release_runs':[]
+    }
+    with_evidence=compose_v2(r,'example/repo',rev,'main',OBSERVED,bundle)
+    assert with_evidence['external_execution_evidence']['trust']=='SUPPLIED_EXACT'
+    assert with_evidence['ci']['exact_subject_runs']
+    assert with_evidence['tests']['exact_subject_execution']
+    assert with_evidence['overall_portrait']['verdict']==d['overall_portrait']['verdict']
+    assert any(x['dimension']=='external_execution_evidence' for x in with_evidence['overall_portrait']['explicit_unknowns'])
 print('Integrated Audit v2 tests passed')
