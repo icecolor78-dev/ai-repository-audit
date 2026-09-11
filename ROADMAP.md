@@ -346,6 +346,24 @@ After technical depth is proven, improve presentation:
 
 Do not add heavy dashboard/SaaS infrastructure before real demand justifies it.
 
+## Public next-release capability set
+
+The next release cycle is targeting these capability areas:
+
+- Claims vs Evidence Matrix;
+- CI Evidence Profiler;
+- Test Depth Map;
+- Release and Provenance Audit;
+- Workflow Security Analysis;
+- Supply-chain and Dependency Health;
+- Architecture and Change-impact Analysis;
+- API, Contract and Documentation Drift;
+- Runtime, Performance and Observability Evidence;
+- Auditor Self-Quality and Golden Cases;
+- Customer-facing Report Experience.
+
+Active implementation is developed on a private engineering surface. This public roadmap communicates product direction only; it does **not** claim that any unreleased capability is already available, complete, verified, or release-ready. Reviewed public-safe artifacts are published here when they reach the appropriate release boundary.
+
 ## Program ownership / anti-twin decision
 
 No new standalone repository is approved by this roadmap today.
