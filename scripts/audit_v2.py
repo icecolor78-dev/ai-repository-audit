@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse, json
 from datetime import datetime, timezone
 from pathlib import Path
+from architecture_exact import analyze_architecture, analyze_contract_drift
 from audit_portrait import compose
 from exact_subject import bind_exact_subject, exact_tree_snapshot
 from rem_extract_exact import build_exact_rem
@@ -17,9 +18,17 @@ def compose_v2(root:Path,repository:str,revision:str,default_branch:str,observed
     with exact_tree_snapshot(root,revision) as scan_root:
         rem=build_exact_rem(scan_root,repository,revision,default_branch,observed_at,binding)
         portrait=compose(scan_root,repository,revision,default_branch,observed_at,base_rem=rem)
+        portrait['architecture']=analyze_architecture(scan_root)
+        portrait['contract_drift']=analyze_contract_drift(scan_root)
     portrait['assurance_v2']=summarize(portrait)
     portrait['overall_portrait']['version']='2.0'
     portrait['overall_portrait']['assurance_contract_complete']=portrait['assurance_v2']['complete_contract']
+    for item in portrait['architecture'].get('unknowns',[]):
+        row={'dimension':'architecture','detail':item}
+        if row not in portrait['overall_portrait']['explicit_unknowns']:
+            portrait['overall_portrait']['explicit_unknowns'].append(row)
+    for item in portrait['contract_drift'].get('unknowns',[]):
+        portrait['overall_portrait']['explicit_unknowns'].append({'dimension':'contract_drift','detail':item})
     portrait['overall_portrait']['statement'] += ' V2 completeness means the 15-domain evidence contract is present; it is not a claim that every domain passed.'
     return portrait
 
