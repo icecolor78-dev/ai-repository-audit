@@ -7,13 +7,18 @@ ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_FILES = [
     "AGENTS.md", "README.md", "FAQ.md", "FREE_DEMO_AUDIT.md", "HOW_IT_WORKS.md", "SAMPLE_AUDIT.md", "SECURITY.md",
-    "CASE_STUDY_QUANT_SYSTEM.md", "CASE_STUDY_LANGUAGE_LEARNING.md", "docs/EVIDENCE_MAPPER_V1.md",
+    "docs/EVIDENCE_MAPPER_V1.md",
     "schemas/rem-v1.schema.json", "schemas/rem-v1.1.schema.json", "requirements-ci.txt",
     "scripts/validate_rem.py", "scripts/validate_rem_v11.py", "scripts/rem_extract.py", "scripts/rem_extract_exact.py",
     "scripts/exact_subject.py", "scripts/claims_exact.py", "scripts/workflow_structured.py", "scripts/test_depth_exact.py",
     "scripts/test_rem_extract.py", "scripts/test_rem_extract_exact.py", "scripts/test_exact_subject.py",
     "scripts/test_claims_exact.py", "scripts/test_workflow_structured.py", "scripts/test_test_depth_exact.py", "scripts/test_validate_rem_v11.py",
 ]
+
+FORBIDDEN_PRIVATE_DERIVED_FILES = {
+    "CASE_STUDY_QUANT_SYSTEM.md",
+    "CASE_STUDY_LANGUAGE_LEARNING.md",
+}
 
 SECRET_PATTERNS = {
     "private key": re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----"),
@@ -38,6 +43,10 @@ def fail(message: str) -> None:
 for required in REQUIRED_FILES:
     if not (ROOT / required).is_file():
         fail(f"required public file missing: {required}")
+
+for forbidden in FORBIDDEN_PRIVATE_DERIVED_FILES:
+    if (ROOT / forbidden).exists():
+        fail(f"private-derived public artifact must not exist: {forbidden}")
 
 for path in TEXT_FILES:
     text = path.read_text(encoding="utf-8")
