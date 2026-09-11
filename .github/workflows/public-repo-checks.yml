@@ -25,5 +25,7 @@ jobs:
         run: python scripts/validate_public_repo.py
       - name: Verify REM extractor
         run: python scripts/test_rem_extract.py
+      - name: Verify Wave A assurance extraction
+        run: python scripts/test_v2_wave_a.py
       - name: Verify Overall Repository Portrait
         run: python scripts/test_audit_portrait.py
