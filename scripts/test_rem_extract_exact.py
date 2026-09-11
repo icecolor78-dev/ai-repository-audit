@@ -5,6 +5,7 @@ import tempfile
 from pathlib import Path
 
 from rem_extract_exact import extract_exact
+from validate_rem_v11 import EvidenceContractError
 
 OBSERVED = "2026-09-11T00:00:00Z"
 
@@ -30,9 +31,11 @@ with tempfile.TemporaryDirectory() as tmp:
     assert any(source["id"] == "subject-binding" for source in exact["sources"])
     assert all(source["freshness"]["state"] == "exact" for source in exact["sources"])
 
-    wrong = extract_exact(root, "other/repo", sha, "main", OBSERVED)
-    assert not any(source["id"] == "subject-binding" for source in wrong["sources"])
-    assert all(source["freshness"]["state"] == "unknown" for source in wrong["sources"])
-    assert any("exact subject binding failed" in item for item in wrong["coverage"]["explicit_unknowns"])
+    try:
+        extract_exact(root, "other/repo", sha, "main", OBSERVED)
+    except EvidenceContractError as exc:
+        assert "exact subject binding failed" in str(exc)
+    else:
+        raise AssertionError("wrong-repository exact audit did not fail closed")
 
 print("Exact-bound REM extraction tests passed")
