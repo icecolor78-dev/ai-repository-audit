@@ -7,6 +7,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from rem_extract import extract
 from v2_wave_a import extract_wave_a
+from v2_wave_b import extract_wave_b
 
 LICENSE_NAMES={"LICENSE","LICENSE.md","LICENSE.txt","COPYING","COPYING.md","NOTICE","NOTICE.md"}
 UPDATE_FILES={"dependabot.yml","dependabot.yaml","renovate.json","renovate.json5","renovate-config.js"}
@@ -48,15 +49,14 @@ def bind_claims(rem):
 def compose(root:Path, repository:str, revision:str, default_branch:str, observed_at:str):
     rem=bind_claims(extract(root,repository,revision,default_branch,observed_at)); all_files=rows(root); supply,arch,ops,gov,maint=static_layers(root,all_files)
     rem["supply_chain"].update(supply); rem["architecture"]=arch; rem["operability"]=ops; rem["governance"]=gov; rem["maintainability"]=maint
-    wave_a=extract_wave_a(root)
-    rem.update(wave_a)
+    rem.update(extract_wave_a(root)); rem.update(extract_wave_b(root))
     findings=[]
     for s in rem["security"]["signals"]:
         if s["severity"] in {"HIGH","MEDIUM","LOW"}: findings.append(s)
     if rem["inventory"]["manifests"] and not rem["inventory"]["lockfiles"]: findings.append(sig("dependency_reproducibility",rem["inventory"]["manifests"][0],"manifest observed without a recognized lockfile; ecosystem-specific reproducibility remains to be verified","MEDIUM","LOW"))
     if rem["release"]["workflows"] and not rem["release"]["trusted_publishing"]: findings.append(sig("release_identity",rem["release"]["workflows"][0],"release workflow observed without static OIDC trusted-publishing signal; alternate authentication may exist","LOW","INFO"))
     unknowns=[]
-    for section in ("ci","tests","security","release","supply_chain","architecture","operability","governance","maintainability","threat_model","data_privacy","agent_safety","identity_access"):
+    for section in ("ci","tests","security","release","supply_chain","architecture","operability","governance","maintainability","threat_model","data_privacy","agent_safety","identity_access","resilience","incident_readiness","external_dependency_failure","auditability_forensics"):
         unknowns += [{"dimension":section,"detail":u} for u in rem[section].get("unknowns",[])]
     remediation=[]
     if any(f["kind"]=="mutable_action_ref" for f in findings): remediation.append({"priority":"P1","action":"Pin third-party GitHub Actions to reviewed full commit SHAs where operationally appropriate.","verification":"Re-extract exact subject and verify mutable-ref signals are resolved or explicitly accepted."})
@@ -66,9 +66,12 @@ def compose(root:Path, repository:str, revision:str, default_branch:str, observe
     if rem["data_privacy"]["signals"]: remediation.append({"priority":"P1","action":"Build an explicit data-flow inventory for observed personal/customer-data signals, including logging, retention, deletion/export and encryption boundaries.","verification":"Trace representative data classes end-to-end and attach execution/policy evidence where static evidence is insufficient."})
     if rem["agent_safety"]["signals"]: remediation.append({"priority":"P1","action":"Verify untrusted-content-to-tool paths, action authority, confirmation gates and loop/budget controls with bounded adversarial tests.","verification":"Attach exact-subject prompt-injection/tool-authority regression evidence; do not infer runtime safety from code presence."})
     if rem["identity_access"]["signals"]: remediation.append({"priority":"P1","action":"Map authentication, authorization, scopes/service identities and tenant boundaries separately.","verification":"Run negative authorization and cross-tenant tests where applicable; static configuration alone remains PARTIAL."})
+    if rem["resilience"]["signals"] or rem["external_dependency_failure"]["signals"]: remediation.append({"priority":"P1","action":"Exercise observed retry/timeout/idempotency/dependency-failure paths under bounded fault injection.","verification":"Attach exact-subject failure-injection evidence for timeout, partial outage, duplicate delivery and recovery; static controls alone remain PARTIAL."})
+    if rem["incident_readiness"]["signals"]: remediation.append({"priority":"P1","action":"Verify backup restore, rollback, kill-switch and incident-runbook claims with dated operational evidence.","verification":"Perform bounded restore/rollback exercises and bind measured recovery evidence to claimed RTO/RPO where applicable."})
+    if rem["auditability_forensics"]["signals"]: remediation.append({"priority":"P1","action":"Verify actor attribution, correlation IDs and forensic event continuity across representative state changes.","verification":"Reconstruct a bounded incident/change from durable evidence and explicitly test tamper-resistance claims where made."})
     verdict="HOLD" if any(f["severity"]=="HIGH" for f in findings) else "BOUNDED_REVIEW"
-    rem["overall_portrait"]={"verdict":verdict,"verdict_scope":"static repository evidence only","findings":findings,"claims":rem["claims"]["items"],"explicit_unknowns":unknowns,"remediation":remediation,"confidence":"PARTIAL","statement":"This portrait summarizes exact-subject repository evidence. It is not a penetration test, certification, compliance or legal opinion, production-runtime proof, privacy guarantee, prompt-injection guarantee, tenant-isolation proof, or guarantee of defect/vulnerability absence."}
-    rem["coverage"]["dimensions"] += ["supply-chain static evidence","architecture/change-impact signals","operability signals","governance signals","maintainability signals","claims/evidence binding","threat-model evidence","data-privacy evidence","agent-safety evidence","identity/access evidence","Overall Repository Portrait"]
+    rem["overall_portrait"]={"verdict":verdict,"verdict_scope":"static repository evidence only","findings":findings,"claims":rem["claims"]["items"],"explicit_unknowns":unknowns,"remediation":remediation,"confidence":"PARTIAL","statement":"This portrait summarizes exact-subject repository evidence. It is not a penetration test, certification, compliance or legal opinion, production-runtime proof, privacy guarantee, prompt-injection guarantee, tenant-isolation proof, resilience/SLA proof, disaster-recovery attestation, or guarantee of defect/vulnerability absence."}
+    rem["coverage"]["dimensions"] += ["supply-chain static evidence","architecture/change-impact signals","operability signals","governance signals","maintainability signals","claims/evidence binding","threat-model evidence","data-privacy evidence","agent-safety evidence","identity/access evidence","resilience evidence","incident-readiness evidence","external-dependency-failure evidence","auditability/forensics evidence","Overall Repository Portrait"]
     return rem
 
 def main():
