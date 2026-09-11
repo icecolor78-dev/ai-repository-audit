@@ -43,7 +43,7 @@ assert result["overall_portrait"]["verdict"] == "BOUNDED_REVIEW"
 assert result["ci"]["confidence"] == "PARTIAL"
 assert "cannot create VERIFIED or global PASS" in result["external_execution_evidence"]["statement"]
 
-for mutation in ("repo", "sha", "source", "count", "premature"):
+for mutation in ("repo", "sha", "source", "cross_repo_source", "count", "premature"):
     broken = deepcopy(BUNDLE)
     if mutation == "repo":
         broken["subject"]["repository"] = "other/repo"
@@ -51,6 +51,8 @@ for mutation in ("repo", "sha", "source", "count", "premature"):
         broken["workflow_runs"][0]["revision"] = "c" * 40
     elif mutation == "source":
         broken["workflow_runs"][0]["source"] = "https://example.com/not-github"
+    elif mutation == "cross_repo_source":
+        broken["workflow_runs"][0]["source"] = "https://github.com/other/repo/actions/runs/9"
     elif mutation == "count":
         broken["test_runs"][0]["failed"] = -1
     else:
