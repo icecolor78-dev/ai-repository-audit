@@ -15,12 +15,20 @@ class ExternalEvidenceError(ValueError):
     pass
 
 
-def _public_github_url(value: Any, field: str) -> str:
+def _public_github_url(value: Any, field: str, repository: str) -> str:
     if not isinstance(value, str) or not value:
         raise ExternalEvidenceError(f"{field} requires a source URL")
     parsed = urlparse(value)
     if parsed.scheme != "https" or parsed.hostname not in {"github.com", "api.github.com"}:
         raise ExternalEvidenceError(f"{field} must use a public GitHub HTTPS source")
+    owner, name = repository.split("/", 1)
+    parts = [part for part in parsed.path.split("/") if part]
+    if parsed.hostname == "github.com":
+        matches = len(parts) >= 2 and parts[0].casefold() == owner.casefold() and parts[1].casefold() == name.casefold()
+    else:
+        matches = len(parts) >= 3 and parts[0] == "repos" and parts[1].casefold() == owner.casefold() and parts[2].casefold() == name.casefold()
+    if not matches:
+        raise ExternalEvidenceError(f"{field} does not belong to the audited GitHub repository")
     return value
 
 
@@ -81,7 +89,7 @@ def validate_bundle(bundle: Any, repository: str, revision: str) -> dict:
             "revision": _exact_revision(item.get("revision"), revision, f"workflow_runs[{index}].revision"),
             "status": status,
             "conclusion": conclusion,
-            "source": _public_github_url(item.get("source"), f"workflow_runs[{index}].source"),
+            "source": _public_github_url(item.get("source"), f"workflow_runs[{index}].source", repository),
         })
 
     for index, item in enumerate(bundle.get("test_runs", [])):
@@ -100,7 +108,7 @@ def validate_bundle(bundle: Any, repository: str, revision: str) -> dict:
             "passed": _nonnegative_int(item.get("passed"), f"test_runs[{index}].passed"),
             "failed": _nonnegative_int(item.get("failed"), f"test_runs[{index}].failed"),
             "skipped": _nonnegative_int(item.get("skipped"), f"test_runs[{index}].skipped"),
-            "source": _public_github_url(item.get("source"), f"test_runs[{index}].source"),
+            "source": _public_github_url(item.get("source"), f"test_runs[{index}].source", repository),
         })
 
     for index, item in enumerate(bundle.get("release_runs", [])):
@@ -116,7 +124,7 @@ def validate_bundle(bundle: Any, repository: str, revision: str) -> dict:
             "name": name.strip(),
             "revision": _exact_revision(item.get("revision"), revision, f"release_runs[{index}].revision"),
             "conclusion": conclusion,
-            "source": _public_github_url(item.get("source"), f"release_runs[{index}].source"),
+            "source": _public_github_url(item.get("source"), f"release_runs[{index}].source", repository),
         }
         digest = item.get("artifact_digest")
         if digest is not None:
