@@ -101,6 +101,18 @@ with tempfile.TemporaryDirectory() as tmp:
                 "source": "https://github.com/example/golden/actions/runs/1",
             }
         ],
+        "branch_enforcement": [
+            {
+                "branch": "main",
+                "observed_at": OBSERVED,
+                "pull_request_required": True,
+                "required_status_checks": [],
+                "conversation_resolution_required": True,
+                "force_push_allowed": False,
+                "deletion_allowed": False,
+                "source": "https://github.com/example/golden/settings/rules",
+            }
+        ],
     }
 
     first = compose_v2(root, "example/golden", revision, "main", OBSERVED, bundle)
@@ -115,6 +127,8 @@ with tempfile.TemporaryDirectory() as tmp:
     assert first["artifact_provenance_evidence"]["trust"] == "SUPPLIED_EXACT"
     assert first["artifact_provenance_evidence"]["confidence"] == "PARTIAL"
     assert first["artifact_provenance_evidence"]["records"][0]["revision"] == revision
+    assert first["platform_enforcement_evidence"]["trust"] == "SUPPLIED_PLATFORM_STATE"
+    assert first["platform_enforcement_evidence"]["observations"][0]["missing_required_status_gate"] is True
     assert first["overall_portrait"]["verdict"] != "PASS"
 
     serialized = str(first)
@@ -124,6 +138,7 @@ with tempfile.TemporaryDirectory() as tmp:
     assert "requirements.txt" in serialized
     assert "sha256:" in serialized
     assert "github-actions:workflow:release" in serialized
+    assert "SUPPLIED_PLATFORM_STATE" in serialized
 
     report_first = render_customer_report(first)
     report_second = render_customer_report(second)
@@ -131,7 +146,10 @@ with tempfile.TemporaryDirectory() as tmp:
     assert f"`{revision}`" in report_first
     assert "`example/golden`" in report_first
     assert "SUPPLIED_EXACT" in report_first
+    assert "SUPPLIED_PLATFORM_STATE" in report_first
     assert "Artifact provenance trust" in report_first
+    assert "Platform enforcement trust" in report_first
+    assert "Missing required-status gate: **True**" in report_first
     assert "trusted builder identity" in report_first
     assert "**PASS**" not in report_first
     assert "global_score" not in report_first

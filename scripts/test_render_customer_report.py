@@ -35,6 +35,14 @@ PORTRAIT = {
         "confidence": "PARTIAL",
         "unknowns": ["Supplied provenance does not establish trusted builder or release authorization."],
     },
+    "platform_enforcement_evidence": {
+        "trust": "SUPPLIED_PLATFORM_STATE",
+        "confidence": "PARTIAL",
+        "observations": [
+            {"branch": "main", "required_status_checks": [], "missing_required_status_gate": True}
+        ],
+        "unknowns": ["Supplied platform state is time-bound and not independently provider-authenticated."],
+    },
 }
 
 first = render_customer_report(PORTRAIT)
@@ -44,8 +52,12 @@ assert "**BOUNDED_REVIEW**" in first
 assert "CONTRADICTED" in first
 assert "UNVERIFIED" in first
 assert "SUPPLIED_EXACT" in first
+assert "SUPPLIED_PLATFORM_STATE" in first
 assert "Artifact provenance trust" in first
+assert "Platform enforcement trust" in first
+assert "Missing required-status gate: **True**" in first
 assert "trusted builder or release authorization" in first
+assert "time-bound" in first
 assert "global_score" not in first
 assert "**PASS**" not in first
 assert "Exact execution coverage remains UNVERIFIED." in first

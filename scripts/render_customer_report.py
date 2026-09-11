@@ -87,8 +87,9 @@ def render_customer_report(portrait: dict) -> str:
     external = portrait.get("external_execution_evidence")
     runtime = portrait.get("runtime_evidence")
     provenance = portrait.get("artifact_provenance_evidence")
-    if external or runtime or provenance:
-        lines += ["## Supplied execution/runtime/provenance evidence", ""]
+    platform = portrait.get("platform_enforcement_evidence")
+    if external or runtime or provenance or platform:
+        lines += ["## Supplied external evidence", ""]
         if external:
             lines.append(f"- Execution evidence trust: **{_text(external.get('trust', 'UNVERIFIED'))}**")
             if external.get("statement"):
@@ -101,6 +102,14 @@ def render_customer_report(portrait: dict) -> str:
             lines.append(f"- Artifact provenance confidence: **{_text(provenance.get('confidence', 'UNVERIFIED'))}**")
             for item in provenance.get("unknowns", []):
                 lines.append(f"- Provenance boundary: {_text(item)}")
+        if platform:
+            lines.append(f"- Platform enforcement trust: **{_text(platform.get('trust', 'UNVERIFIED'))}**")
+            lines.append(f"- Platform enforcement confidence: **{_text(platform.get('confidence', 'UNVERIFIED'))}**")
+            for observation in platform.get("observations", []):
+                lines.append(f"- Branch `{_text(observation.get('branch', 'UNVERIFIED'))}` required status checks: {_text(observation.get('required_status_checks', []))}")
+                lines.append(f"- Missing required-status gate: **{_text(observation.get('missing_required_status_gate', 'UNVERIFIED'))}**")
+            for item in platform.get("unknowns", []):
+                lines.append(f"- Platform-state boundary: {_text(item)}")
         lines.append("")
 
     lines += [
