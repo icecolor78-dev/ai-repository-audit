@@ -1,0 +1,1 @@
+These public demos are evidence-scope demonstrations only. They are not upstream-requested audits, customer engagements, endorsements, vulnerability disclosures, certifications, or guarantees. Security-sensitive findings must never be published through this demo path.
