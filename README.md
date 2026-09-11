@@ -15,6 +15,8 @@
 
 The central question is not “does this repository look good?” It is: **what can the available evidence actually prove about this exact subject, and what remains unverified?**
 
+**Shipping a release or handing a project to a client?** The existing $49 Full Audit can be scoped as a [**Release / Handoff Evidence Review →**](RELEASE_HANDOFF_REVIEW.md): one public repository, one exact revision, up to three agreed decision-relevant questions, explicit unknowns and next actions.
+
 [**Request a Free Demo Audit — $0 →**](https://github.com/icecolor78-dev/ai-repository-audit/issues/new?template=free-demo-audit.yml)
 
 No signup, domain, paid infrastructure, or private repository access is required for the free demo.
@@ -23,25 +25,28 @@ No signup, domain, paid infrastructure, or private repository access is required
 
 The current public automated path is intentionally narrower than the full expert audit service.
 
-**Automated / deterministic in REM v1.1:**
-- exact GitHub repository + `HEAD` SHA + immutable Git-tree binding;
+**Automated / deterministic in the accepted Audit v2 path:**
+- exact GitHub repository + selected `HEAD` SHA + immutable Git-tree binding;
 - Git-tree content manifest identity;
 - exact README claim text preservation without inferring truth from documentation;
 - structured GitHub Actions trigger/job/step inspection;
-- bounded workflow-security review signals with `pull_request_target` treated as context, not a vulnerability by itself;
-- test-file/type/subsystem discovery without silently truncating large test trees;
-- standard JSON Schema validation plus fail-closed evidence rules for `VERIFIED`.
+- bounded workflow-security and false-green review signals;
+- test-file/type discovery without silently truncating large test trees;
+- bounded supply-chain, repository-local architecture and contract-drift evidence;
+- standard JSON Schema validation plus fail-closed evidence rules for `VERIFIED`;
+- optional caller-supplied exact workflow/test/release/runtime/provenance evidence with explicit trust boundaries;
+- optional time-bound supplied branch/ruleset state kept distinct from commit-bound evidence;
+- deterministic customer-facing Markdown rendering and golden adversarial end-to-end tests.
 
-**Requires external execution evidence or expert review:**
-- whether CI jobs actually ran, were skipped, were required, or covered the relevant change;
+**Still requires independently retrieved/provider-authenticated evidence or expert review for stronger conclusions:**
+- whether externally supplied CI/runtime/provenance/platform evidence is independently authentic and current;
 - exploitability and absence of vulnerabilities;
-- successful publishing and source-to-artifact provenance;
-- runtime behavior, performance, recovery and observability outcomes;
-- deep dependency/license/vulnerability conclusions;
-- architecture coupling/change-impact conclusions beyond supplied evidence;
-- final release/readiness judgment.
+- trusted-builder/signature/reproducible-build conclusions;
+- successful deployment and production behavior;
+- deep dependency/license/vulnerability conclusions beyond bounded repository evidence;
+- final release/readiness judgment in the agreed business context.
 
-Static configuration never becomes runtime proof merely because it was discovered. Missing, stale, inaccessible or wrong-subject evidence stays **UNVERIFIED**.
+Static configuration never becomes runtime proof merely because it was discovered. Caller-supplied evidence never becomes independently authenticated merely because it is well formed. Missing, stale, inaccessible or wrong-subject evidence stays bounded or **UNVERIFIED**.
 
 ## Evidence states
 
@@ -107,7 +112,7 @@ If that binding cannot be established, the audit fails closed rather than borrow
 | Offer | Founding price | Scope |
 |---|---:|---|
 | Free Demo Audit | **$0** | One public repository at one reviewed revision, up to 3 high-leverage findings/observations and prioritized next actions. |
-| Full AI Repository Audit | **$49** | Deeper expert evidence review across the agreed repository scope, using automation where it is trustworthy and manual review where it is not. |
+| Full AI Repository Audit | **$49** | Deeper expert evidence review across the agreed repository scope. A concrete starting scope is the [Release / Handoff Evidence Review](RELEASE_HANDOFF_REVIEW.md). |
 | Audit + bounded remediation | **$149** | Full audit plus an explicitly agreed, bounded set of fixes or hardening changes for selected findings, followed by re-verification. |
 | Setup / pilot | **from $299** | Implementation/process enablement for a team or project: define scope, evidence workflow and repository controls needed to make the discipline repeatable. |
 
@@ -115,13 +120,13 @@ The free request creates no payment obligation. Paid work starts only after a se
 
 ## How it works
 
-1. [Submit a Free Demo Audit request](https://github.com/icecolor78-dev/ai-repository-audit/issues/new?template=free-demo-audit.yml).
+1. [Submit a Free Demo Audit request](https://github.com/icecolor78-dev/ai-repository-audit/issues/new?template=free-demo-audit.yml) with the decision or concern you need help with.
 2. Freeze and, where automation is used, verify the subject binding.
 3. Review repository-visible and available execution evidence within scope.
 4. Separate verified facts, partial evidence, unknowns and contradictions.
 5. Receive prioritized findings/observations and continue only if a deeper paid audit or remediation is useful.
 
-See [HOW_IT_WORKS.md](HOW_IT_WORKS.md), [SAMPLE_AUDIT.md](SAMPLE_AUDIT.md), [FAQ.md](FAQ.md), and [SECURITY.md](SECURITY.md).
+See [RELEASE_HANDOFF_REVIEW.md](RELEASE_HANDOFF_REVIEW.md), [HOW_IT_WORKS.md](HOW_IT_WORKS.md), [SAMPLE_AUDIT.md](SAMPLE_AUDIT.md), [FAQ.md](FAQ.md), and [SECURITY.md](SECURITY.md).
 
 ## Public-origin-only boundary
 
@@ -135,4 +140,4 @@ This service is not a penetration test, certification, compliance attestation, l
 
 ### Ready?
 
-[**Request your Free Demo Audit — $0 →**](https://github.com/icecolor78-dev/ai-repository-audit/issues/new?template=free-demo-audit.yml)
+If you have a real release or handoff question, [**request a Free Demo Audit — $0 →**](https://github.com/icecolor78-dev/ai-repository-audit/issues/new?template=free-demo-audit.yml)
