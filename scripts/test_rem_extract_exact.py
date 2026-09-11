@@ -38,4 +38,21 @@ with tempfile.TemporaryDirectory() as tmp:
     else:
         raise AssertionError("wrong-repository exact audit did not fail closed")
 
+with tempfile.TemporaryDirectory() as tmp:
+    root = Path(tmp)
+    git(root, "init")
+    git(root, "config", "user.email", "audit@example.invalid")
+    git(root, "config", "user.name", "Audit Test")
+    git(root, "remote", "add", "origin", "https://github.com/example/rst-fixture.git")
+    (root / "README.rst").write_text("Security tests are documented.\n", encoding="utf-8")
+    git(root, "add", "README.rst")
+    git(root, "commit", "-m", "fixture")
+    sha = git(root, "rev-parse", "HEAD")
+    exact = extract_exact(root, "example/rst-fixture", sha, "main", OBSERVED)
+    readme_source = next(source for source in exact["sources"] if source["id"] == "readme")
+    assert readme_source["locator"] == "README.rst"
+    assert readme_source["supports"] == ["claim-source"]
+    assert exact["claims"]["items"][0]["source_ref"] == "readme"
+    assert exact["claims"]["items"][0]["state"] == "UNVERIFIED"
+
 print("Exact-bound REM extraction tests passed")
