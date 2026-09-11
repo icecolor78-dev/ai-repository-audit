@@ -8,6 +8,7 @@ from pathlib import Path
 from claims_exact import extract_readme_claims, selected_readme
 from exact_subject import bind_exact_subject, exact_tree_snapshot
 from rem_extract import extract
+from supply_chain_exact import analyze_supply_chain
 from test_depth_exact import profile_tests
 from validate_rem_v11 import EvidenceContractError, validate_document
 from workflow_structured import analyze_workflows
@@ -25,6 +26,7 @@ def build_exact_rem(
     portrait["schema_version"] = "rem/v1.1"
     portrait["claims"]["items"] = extract_readme_claims(scan_root)
     portrait["tests"] = profile_tests(scan_root)
+    portrait["supply_chain"] = analyze_supply_chain(scan_root)
     ci, security, release = analyze_workflows(scan_root)
     portrait["ci"] = ci
     portrait["security"] = security
