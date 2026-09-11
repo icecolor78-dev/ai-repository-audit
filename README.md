@@ -52,14 +52,14 @@ Unknown evidence stays **UNVERIFIED** instead of being turned into “looks good
 
 ## Founding offers
 
-| Offer | Founding price |
-|---|---:|
-| Free Demo Audit | **$0** |
-| Full AI Repository Audit | **$49** |
-| Audit + bounded remediation | **$149** |
-| Setup / pilot | **from $299** |
+| Offer | Founding price | Scope |
+|---|---:|---|
+| Free Demo Audit | **$0** | One public repository at one exact revision, up to 3 high-leverage findings/observations and prioritized next actions. |
+| Full AI Repository Audit | **$49** | Deeper evidence review across the agreed repository scope, including relevant CI/tests, architecture, authorization/security boundaries, reproducibility and release-readiness evidence, with prioritized findings. |
+| Audit + bounded remediation | **$149** | Full audit plus an explicitly agreed, bounded set of fixes or hardening changes for selected findings, followed by re-verification of those changes. |
+| Setup / pilot | **from $299** | Implementation/process enablement for a team or project: define the scope, evidence workflow and repository controls needed to make the audit discipline repeatable. |
 
-The free request creates no payment obligation. Paid work starts only after a separate scope is agreed.
+The tiers are intentionally different: the **Free Demo samples the method**, the **Full Audit expands the evidence depth**, **remediation changes selected code/configuration**, and a **Setup/Pilot installs a repeatable workflow**. The free request creates no payment obligation. Paid work starts only after a separate scope is agreed.
 
 ## Typical review areas
 

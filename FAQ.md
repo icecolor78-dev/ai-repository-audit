@@ -13,10 +13,19 @@ No. The free demo is read-only and uses repository-visible evidence.
 Not through the public Free Demo Issue Form. Private work requires a separately agreed scope and explicit access authorization.
 
 ## What does the free demo include?
-One public repository, one exact revision, and up to three high-leverage findings or observations.
+One public repository, one exact revision, and up to three high-leverage findings or observations. It is a bounded sample of the evidence-first audit method, not a complete repository certification.
+
+## What does the $49 Full Audit add?
+The Full AI Repository Audit expands the evidence depth across the separately agreed repository scope. Relevant CI/tests, architecture, authorization/security boundaries, reproducibility and release-readiness evidence can be reviewed together rather than limiting the result to three demo findings.
+
+## What is Audit + bounded remediation?
+The $149 founding offer combines the full audit with an explicitly agreed, limited set of fixes or hardening changes for selected findings. Those changes are then re-verified. It is not an unlimited rewrite or open-ended development engagement.
+
+## What is Setup / Pilot?
+Starting from $299, Setup / Pilot is implementation and process enablement rather than simply a larger audit: the scope, evidence workflow and repository controls are established for a team or project so the discipline can be repeated.
 
 ## What happens after the demo?
-Nothing automatically. If you want deeper work, a full audit or bounded remediation scope can be agreed separately.
+Nothing automatically. If you want deeper work, a full audit, bounded remediation, or setup/pilot scope can be agreed separately. Paid work does not begin without that separate agreement.
 
 ## Are findings guaranteed vulnerabilities?
 No. Findings are bounded engineering observations based on reviewed evidence and stated confidence. The service is not a penetration test or security guarantee.
