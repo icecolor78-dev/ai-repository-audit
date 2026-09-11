@@ -1,0 +1,44 @@
+name: Secondary verify RC-71
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify-frozen-candidate:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    steps:
+      - name: Checkout frozen production candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: b5f47023eef50734fbf3e0ef5877a0678e15338a
+          persist-credentials: false
+      - name: Assert frozen identity
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "b5f47023eef50734fbf3e0ef5877a0678e15338a"
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Install pinned CI dependencies
+        run: python -m pip install -r requirements-ci.txt
+      - name: Run public boundary and adversarial gates
+        run: python scripts/validate_public_repo.py
+      - name: Run legacy regression suite
+        shell: bash
+        run: |
+          python scripts/test_v2_wave_a.py
+          python scripts/test_v2_wave_b.py
+          python scripts/test_v2_wave_c.py
+          python scripts/test_v2_wave_d.py
+          python scripts/test_audit_portrait.py
+          python scripts/test_v2_assurance_summary.py
+          python scripts/test_audit_v2.py
