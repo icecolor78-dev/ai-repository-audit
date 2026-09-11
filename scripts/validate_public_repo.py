@@ -6,7 +6,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_FILES = [
-    "AGENTS.md", "README.md", "FAQ.md", "FREE_DEMO_AUDIT.md", "HOW_IT_WORKS.md", "SAMPLE_AUDIT.md", "SECURITY.md",
+    "AGENTS.md", "README.md", "FAQ.md", "FREE_DEMO_AUDIT.md", "HOW_IT_WORKS.md", "RELEASE_HANDOFF_REVIEW.md", "SAMPLE_AUDIT.md", "SECURITY.md",
     "docs/EVIDENCE_MAPPER_V1.md",
     "schemas/rem-v1.schema.json", "schemas/rem-v1.1.schema.json", "requirements-ci.txt",
     "scripts/validate_rem.py", "scripts/validate_rem_v11.py", "scripts/rem_extract.py", "scripts/rem_extract_exact.py",
