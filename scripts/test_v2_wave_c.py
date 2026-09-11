@@ -8,6 +8,7 @@ with tempfile.TemporaryDirectory() as tmp:
     (r/'src/app.py').write_text('''
 MAX_STEPS=12
 DEFAULT_ENV='staging'
+# configuration environment default fallback feature flag
 def worker(job):
     with transaction():
         lock(job.id)
