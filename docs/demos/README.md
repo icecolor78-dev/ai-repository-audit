@@ -11,6 +11,9 @@ Their purpose is to demonstrate evidence-first exact-revision auditing without i
 | Terraform | `01081abb7f4e644d32fecc4839484eb0ce30385f` | [Read demo](TERRAFORM_PUBLIC_DEMO.md) |
 | pyca/cryptography | `c507932a7d555e2a163f680722105727d91d472b` | [Read demo](CRYPTOGRAPHY_PUBLIC_DEMO.md) |
 | git-auto-commit-action | `92648143fd6aebb695590bfe3fc28f92bcf383e4` | [Read demo](GIT_AUTO_COMMIT_ACTION_PUBLIC_DEMO.md) |
+| GitHub Local Actions | `bc25f97d709188cc9d1669763d8d447e418c3634` | [Read demo](GITHUB_LOCAL_ACTIONS_PUBLIC_DEMO.md) |
+| cargo-make | `95dcc545db8cf08af6fbec524e200e7c80b06027` | [Read demo](CARGO_MAKE_PUBLIC_DEMO.md) |
+| flutter-action | `4cab68ce0f1c7c924f688bff4792e044f1aeb30c` | [Read demo](FLUTTER_ACTION_PUBLIC_DEMO.md) |
 
 ## What these demos prove
 

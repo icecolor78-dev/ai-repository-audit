@@ -17,6 +17,23 @@
 
 No signup, domain, paid infrastructure, or private repository access is required for the free demo.
 
+## Public Demo Audits
+
+See the method on real public repositories before requesting your own audit.
+
+- [Flask — public demo audit](docs/demos/FLASK_PUBLIC_DEMO.md)
+- [Vite — public demo audit](docs/demos/VITE_PUBLIC_DEMO.md)
+- [Terraform — public demo audit](docs/demos/TERRAFORM_PUBLIC_DEMO.md)
+- [pyca/cryptography — public demo audit](docs/demos/CRYPTOGRAPHY_PUBLIC_DEMO.md)
+- [git-auto-commit-action — public demo audit](docs/demos/GIT_AUTO_COMMIT_ACTION_PUBLIC_DEMO.md)
+- [GitHub Local Actions — public demo audit](docs/demos/GITHUB_LOCAL_ACTIONS_PUBLIC_DEMO.md)
+- [cargo-make — public demo audit](docs/demos/CARGO_MAKE_PUBLIC_DEMO.md)
+- [flutter-action — public demo audit](docs/demos/FLUTTER_ACTION_PUBLIC_DEMO.md)
+
+[**Browse all public demo audits →**](docs/demos/README.md)
+
+These are independent public demonstrations based only on public repository evidence. They are not customer engagements, partnerships, sponsorships, or upstream endorsements.
+
 ## What you get for $0
 
 Submit one public GitHub repository. The demo returns:
@@ -74,7 +91,7 @@ The tiers are intentionally different: the **Free Demo samples the method**, the
 
 Start with the short [synthetic sample audit](SAMPLE_AUDIT.md).
 
-See the [independent public demo audits](docs/demos/README.md) for exact-revision examples on Flask, Vite, Terraform, and pyca/cryptography. These are unsolicited public demonstrations, not customer engagements or upstream endorsements.
+See the [independent public demo audits](docs/demos/README.md) for exact-revision examples on real public repositories. These are unsolicited public demonstrations, not customer engagements or upstream endorsements.
 
 For deeper examples:
 - [sanitized AI-assisted quantitative-system case study](CASE_STUDY_QUANT_SYSTEM.md) — backtest validity, historical-data semantics, cost modeling, strategy independence, trade/no-trade gating and research provenance;
