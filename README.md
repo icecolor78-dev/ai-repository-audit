@@ -27,6 +27,8 @@ See the method on real public repositories before requesting your own audit.
 - [pyca/cryptography — public demo audit](docs/demos/CRYPTOGRAPHY_PUBLIC_DEMO.md)
 - [git-auto-commit-action — public demo audit](docs/demos/GIT_AUTO_COMMIT_ACTION_PUBLIC_DEMO.md)
 - [GitHub Local Actions — public demo audit](docs/demos/GITHUB_LOCAL_ACTIONS_PUBLIC_DEMO.md)
+- [cargo-make — public demo audit](docs/demos/CARGO_MAKE_PUBLIC_DEMO.md)
+- [flutter-action — public demo audit](docs/demos/FLUTTER_ACTION_PUBLIC_DEMO.md)
 
 [**Browse all public demo audits →**](docs/demos/README.md)
 
