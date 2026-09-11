@@ -10,6 +10,7 @@ Their purpose is to demonstrate evidence-first exact-revision auditing without i
 | Vite | `99bd9d1d46153fa939f4a304cc0177db42e28776` | [Read demo](VITE_PUBLIC_DEMO.md) |
 | Terraform | `01081abb7f4e644d32fecc4839484eb0ce30385f` | [Read demo](TERRAFORM_PUBLIC_DEMO.md) |
 | pyca/cryptography | `c507932a7d555e2a163f680722105727d91d472b` | [Read demo](CRYPTOGRAPHY_PUBLIC_DEMO.md) |
+| git-auto-commit-action | `92648143fd6aebb695590bfe3fc28f92bcf383e4` | [Read demo](GIT_AUTO_COMMIT_ACTION_PUBLIC_DEMO.md) |
 
 ## What these demos prove
 
