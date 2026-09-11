@@ -31,5 +31,7 @@ jobs:
         run: python scripts/test_v2_wave_b.py
       - name: Verify Wave C model cost config concurrency extraction
         run: python scripts/test_v2_wave_c.py
+      - name: Verify Wave D migration interface license extraction
+        run: python scripts/test_v2_wave_d.py
       - name: Verify Overall Repository Portrait
         run: python scripts/test_audit_portrait.py
