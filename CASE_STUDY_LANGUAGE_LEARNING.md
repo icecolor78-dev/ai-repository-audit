@@ -1,163 +1,124 @@
 # Case Study — Adaptive Language-Learning System
 
-> **Sanitized and anonymized internal case study.** This page demonstrates audit depth and methodology. It does not identify the private repository, reproduce its source code, disclose private commit hashes or paths, or provide reconstruction-enabling implementation details. Some descriptions are generalized to preserve confidentiality.
+> **Sanitized and anonymized internal case study.** This page demonstrates audit depth and methodology. It does not identify the private repository, reproduce its source code, disclose private commit hashes or paths, or provide reconstruction-enabling implementation details.
+
+## Post-RC evidence refresh
+
+This case was re-evaluated read-only after the Audit exact-subject and evidence-contract hardening. The source repository and exact private revision were verified internally, while their identity remains intentionally omitted from this public page.
+
+The refreshed review preserves three separate truth states that earlier software reviews often collapse:
+
+- deterministic learning mechanics can be supported by repository tests;
+- a learner-facing capability can exist without proving its strongest pedagogical claim;
+- educational outcomes, pronunciation quality and proficiency remain `UNVERIFIED` unless evidence at that semantic level exists.
+
+The current private subject has a reproducible deterministic verification baseline and an independently reproduced exact-bound test run for the accepted core. That is useful engineering evidence. It is **not** evidence of CEFR attainment, pronunciation correctness, real-world retention or general learning efficacy.
 
 ## The question
 
-An adaptive learning application can have a coherent architecture, deterministic tests, persistent learner state and a release-ready core while still lacking evidence for its strongest pedagogical claims.
-
-The audit question was therefore not merely “does the application run?” It was:
+The audit question is not merely “does the application run?” It is:
 
 > **Does the reviewed implementation actually enforce the learning, mastery, progression and pronunciation claims described by the architecture?**
 
 That distinction matters because a documented policy is not evidence that the runtime enforces it.
 
-## Overall Portrait v1 dogfood refresh
+## Current Overall Repository Portrait
 
-The current Audit v1 pipeline was re-applied read-only to a fresh exact revision of this private system. The public result below is intentionally sanitized; source identity, revision, paths and implementation details remain private.
+**Exact-subject discipline:** the review is bound internally to a verified repository/revision subject rather than treating an arbitrary local tree as “exact.” Public sanitization removes that identity from this page; it does not remove the internal binding requirement.
 
-**Repository Evidence Map:** the reviewed subject had a compact Python application surface, explicit architecture/product documentation, a deterministic test surface and one primary pull-request verification workflow. Exact-revision binding was available internally, but is intentionally omitted here.
+**CI / test depth:** current repository evidence supports a deterministic core verification surface across learning state, progression, scheduling, language-pack behavior and local application boundaries. Test existence is kept separate from exact-subject execution evidence, and neither is promoted into proof of educational outcome.
 
-**CI / Test Depth:** static workflow evidence showed a PR verification path combining lint/static checks, compilation and automated tests. Repository evidence also showed tests spanning core learning state, adaptive behavior, conversation behavior, curriculum/review/session behavior, script bridging, speech boundaries and the local web surface. This supports a meaningful verified-core claim; it does **not** prove real-world learning outcomes or every documented product capability.
+**Claims vs evidence:** broad claims are evaluated at their own semantic level. A tested scheduler can support “deterministic review scheduling” without supporting “optimal spaced repetition.” A safe ASR boundary can support “speech recognition does not fabricate pronunciation evidence” without supporting “pronunciation is accurately scored.”
 
-**Workflow Security:** the reviewed workflow used scoped read permission. Third-party action references were version-tag based rather than full immutable commit pins, so the static evidence supports a hardening opportunity rather than a vulnerability claim. Live branch-enforcement and exact-run freshness require separate platform evidence and remain distinct from workflow-definition evidence.
+**Workflow / release:** repository-visible workflow and release-readiness evidence supports engineering process claims within its observed scope. Static configuration does not prove publication success, distribution quality, user outcomes or security absence.
 
-**Release / Provenance:** repository-level evidence supported engineering verification and a governed release/readiness process, but the static repository snapshot did not independently prove a packaged end-user release, external distribution result or pedagogical outcome. Those claims remain `UNVERIFIED` unless separately evidenced.
+**Overall result:** the strongest supported claim is a testable, fail-closed learning core with explicit privacy and evidence boundaries. The strongest unsupported claims remain pedagogical: general mastery quality, pronunciation quality, proficiency outcomes and language-general efficacy.
 
-**Claims vs Evidence:** the strongest useful separation remained unchanged: deterministic learning mechanics can be supported by tests while broader claims about mastery quality, pronunciation quality, CEFR outcomes or language-general behavior require evidence at their own semantic level.
+This is not a pedagogical certification, security certification, accessibility audit or proof of learning efficacy.
 
-**Overall Portrait:** the strongest positive signal was a small, testable, fail-closed core with explicit learning/privacy boundaries. The highest-value remediation direction is to keep expanding evidence from “core mechanics are deterministic” toward “documented product and pedagogical claims are demonstrated independently,” without converting architecture intent into PASS.
-
-This refresh demonstrates the new Overall Portrait layers; it is not a pedagogical certification, security certification, accessibility audit or proof of learning efficacy.
-
-## What the review examined
-
-Representative review areas included:
-
-- whether declared language-agnostic architecture was actually generic in the implementation;
-- whether mastery state was derived from sufficient learning evidence rather than directly assignable state;
-- prerequisite and unlock enforcement;
-- spaced-repetition behavior versus the stronger scheduling claims in the design;
-- script-bridge behavior and whether it operated on pronunciation/phoneme semantics or simple character substitution;
-- separation of speech recognition from pronunciation evidence;
-- conversation constraints and whether conversational activity could improperly mutate mastery;
-- learner-state isolation and persistence;
-- test coverage versus the breadth of product and pedagogical claims;
-- the boundary between a verified core and a complete learner-facing product.
-
-## Representative finding 1 — Architecture can promise generality that the runtime does not yet enforce
+## Representative finding 1 — Architecture generality needs runtime evidence
 
 **Severity:** High  
 **Confidence:** High  
-**Audit state:** BLOCK for the generic-language claim until implementation matches the abstraction
+**State:** `UNVERIFIED` or `CONTRADICTED` depending on the exact implementation evidence
 
-A system may describe a language-pack architecture intended to support additional languages without changing the core, while the current implementation still contains assumptions tied to the first supported language.
+A language-pack architecture may be designed to support additional languages without changing the core while the implementation still contains first-language assumptions.
 
-This is more than a naming problem. If core session behavior, validation or defaults depend directly on one language pack, the extensibility claim is not yet supported by the implementation.
+The audit therefore does not infer generality from interface names or architecture diagrams. Evidence must show that language-specific grapheme, phoneme, lexicon and curriculum behavior is supplied through the language contract rather than embedded in core progression logic.
 
-**Evidence expected before PASS:** language-independent core contracts, pack registration/injection rather than direct first-language dependencies, tests using at least one alternate or synthetic language pack, and proof that adding a pack does not require modifying core learning logic.
+**Evidence expected before VERIFIED:** language-independent core contracts, pack injection/registration, an alternate or synthetic pack, and negative tests proving the core does not silently depend on first-language defaults.
 
-## Representative finding 2 — A `MASTERED` state is not evidence of mastery
+## Representative finding 2 — A stored `MASTERED` state is not mastery evidence
 
 **Severity:** High  
-**Confidence:** High  
-**Audit state:** BLOCK when mastery can be reached without the required evidence
+**Confidence:** High
 
-A learning architecture may define mastery using multiple signals such as independent recall, delayed retrieval, latency, confusion rate, sufficient sample size and forgetting risk. The implementation must derive the state from those signals.
+If a skill can enter a strong state without the evidence that state is supposed to summarize, the state transition proves only that the transition happened.
 
-If a state transition can mark a skill as mastered after only prerequisite checks, the stored label proves that a transition happened — not that the learner demonstrated mastery.
+A stronger model derives mastery from bounded evidence such as sufficient independent attempts, delayed recall, confusion/error history, prerequisite stability and other explicitly defined signals. Missing evidence must remain missing rather than becoming “mastered.”
 
-This is a classic evidence-boundary failure: **state is being treated as proof of the evidence that should have produced the state.**
+**Evidence expected before VERIFIED:** one authoritative mastery policy, minimum-sample gates, delayed-recall evidence, anti-gaming rules, deterministic transition tests and negative tests for insufficient evidence.
 
-**Evidence expected before PASS:** a single authoritative mastery policy, minimum-sample gates, delayed-recall evidence, anti-gaming rules, deterministic transition tests, and negative tests proving that insufficient evidence cannot unlock mastery.
-
-## Representative finding 3 — Script substitution is not automatically pronunciation-aware bridging
+## Representative finding 3 — Script substitution is not pronunciation-aware bridging
 
 **Severity:** Medium / High  
-**Confidence:** High  
-**Audit state:** UNVERIFIED until phonetic semantics are demonstrated
+**Confidence:** High
 
-A script-bridge feature may be designed around a chain such as source pronunciation -> phoneme representation -> target grapheme. A visually convincing implementation can still reduce to direct character replacement.
+A script bridge can look convincing while reducing to direct character substitution. That is not equivalent to a phoneme-aware transformation.
 
-Those mechanisms are not equivalent. Character similarity or convenient substitution can teach the wrong sound correspondence when spelling and pronunciation diverge.
-
-**Evidence expected before PASS:** explicit phoneme-level mapping, contextual/approximate correspondence states, disclosed approximation behavior, normalization rules, and tests covering cases where orthography and pronunciation disagree.
+**Evidence expected before VERIFIED:** explicit phoneme/grapheme relationships, contextual approximation states, normalization rules and cases where orthography and pronunciation disagree.
 
 ## Representative finding 4 — Speech recognition is not pronunciation proof
 
 **Severity:** High when conflated  
-**Confidence:** High  
-**Audit state:** PASS for a fail-closed boundary when recognition cannot manufacture a pronunciation score
+**Confidence:** High
 
-One positive pattern in the reviewed design was an explicit refusal to treat successful automatic speech recognition as evidence of correct pronunciation.
+One important positive control is a fail-closed boundary between speech recognition and pronunciation evidence. A recognizer answering “the utterance was understood” does not establish phoneme accuracy, stress, timing or articulation quality.
 
-A recognizer answering “I understood the utterance” does not establish phoneme accuracy, stress, timing or articulation quality. A safe system should keep those claims separate until pronunciation-specific evidence exists.
+The safe result when pronunciation-specific evidence is missing is `UNVERIFIED`, not a plausible-looking score.
 
-This is an example where **not implementing a score is safer and more truthful than generating an unsupported one**.
+## Representative finding 5 — Deterministic scheduling can be VERIFIED while stronger SRS claims remain UNVERIFIED
 
-## Representative finding 5 — A simple scheduler may work while stronger SRS claims remain unverified
+**Severity:** Medium
 
-**Severity:** Medium  
-**Confidence:** High  
-**Audit state:** UNVERIFIED for advanced adaptive scheduling
+The evidence model separates:
 
-A deterministic review scheduler can be useful and testable while still being materially simpler than an architecture that claims to incorporate forgetting risk, mastery confidence, delayed retrieval and prerequisite instability.
+- “the scheduler deterministically produces the documented scheduling decision for the tested inputs”; and
+- “the scheduler implements an empirically effective adaptive-learning policy.”
 
-The audit therefore separates two claims:
+The first can be verified by exact-subject tests. The second requires evidence at a different level.
 
-- “the scheduler deterministically schedules reviews” may be supported;
-- “the scheduler implements the documented adaptive learning policy” requires additional evidence.
-
-**Evidence expected before PASS:** scheduling inputs bound to the claimed learner signals, boundary tests, forgetting/retention scenarios, reproducible scheduling decisions and evidence that unstable prerequisite skills affect downstream review behavior as designed.
-
-## Representative finding 6 — Green tests can validate a core without validating the whole product
+## Representative finding 6 — Green tests validate only what actually ran
 
 **Severity:** Medium / High  
-**Confidence:** High  
-**Audit state:** scope-dependent
+**Confidence:** High
 
-A compact deterministic test suite may correctly establish important invariants: prerequisite gates, learner isolation, attempt recording, fail-closed speech boundaries and adaptive prioritization.
+A passing suite can establish important invariants such as prerequisite gates, learner-state isolation, deterministic attempts, pack validation and fail-closed speech behavior. It does not automatically establish the full learner-facing product or its real-world educational effect.
 
-That is valuable evidence. It does not automatically establish that the full learner-facing product exists, that the complete pedagogical policy is implemented, or that real-world learning outcomes are validated.
+The refreshed audit therefore keeps **discovered tests**, **exact-subject execution**, **implemented product surface** and **validated outcome** as separate evidence layers.
 
-The audit therefore keeps **verified core**, **implemented product surface**, and **validated pedagogical outcome** as separate claims.
+## Positive evidence matters
 
-## Positive evidence matters too
+Evidence-first auditing is not defect hunting. Useful positive controls in this case include deterministic state transitions, local-first learner-data boundaries, prerequisite modeling, explicit unknown states and refusal to manufacture pronunciation evidence.
 
-Evidence-first auditing is not only about finding defects. Useful PASS-level patterns in this review included boundaries designed to fail closed rather than invent evidence, deterministic state behavior, local-first learner-data principles, prerequisite modeling and tests for important invariants.
+The audit goal is to preserve those strengths while preventing documentation or release language from outrunning evidence.
 
-The goal is to preserve those strengths while preventing broader documentation or release language from outrunning the evidence.
+## What this public case deliberately omits
 
-## Why this is deeper than ordinary code review
+The public version contains no private repository name, source code, internal file paths, commit hashes, issue/PR identifiers, proprietary curriculum data, learner data, credentials, private infrastructure details, exploitable weakness or reconstruction-enabling implementation detail.
 
-A conventional review may see clean classes, passing tests and sensible interfaces. An evidence audit asks additional questions:
+## Result semantics
 
-- Can the runtime reach a strong state without the evidence that state is supposed to represent?
-- Does a generic abstraction remain generic below the interface layer?
-- Is a phonetic claim actually implemented at the phonetic level?
-- Does a green test suite support the exact breadth of the release claim?
-- Is a safe `not implemented` boundary being preserved instead of replaced by a plausible-looking but unsupported score?
+The refreshed case uses evidence states rather than a generic score:
 
-These questions trace claims from documentation through implementation, tests, state transitions and product boundaries.
+- **VERIFIED** — current exact-subject evidence directly supports the bounded claim;
+- **PARTIAL** — current evidence supports only part of the claim;
+- **UNVERIFIED** — evidence is insufficient;
+- **CONTRADICTED** — current evidence conflicts with the claim;
+- **NOT_APPLICABLE** — the claim is genuinely outside the applicable scope and the reason is explicit.
 
-## What was deliberately removed from this public case study
-
-The public version contains **no** private repository name, private source code, file paths, commit hashes, issue/PR identifiers, proprietary curriculum data, learner data, internal architecture identifiers, credentials, private infrastructure details, exploitable weakness, or reconstruction-enabling implementation detail.
-
-The omission is intentional. The case study demonstrates the audit method without turning a private product into public technical documentation.
-
-## Result format
-
-A full audit can separate findings into:
-
-- **PASS** — the requested claim is supported by reviewed evidence;
-- **BLOCK** — evidence demonstrates a material problem within scope;
-- **UNVERIFIED** — evidence is insufficient to support the claim;
-- **NOT_TESTED** — the claim was outside tests actually performed;
-- **NOT_APPLICABLE** — genuinely outside the agreed scope.
-
-Missing evidence is never silently converted into PASS.
+Missing evidence is never silently converted into VERIFIED.
 
 ## Boundary
 
-This case study does not claim that a learning system produces a particular educational outcome, language proficiency level or certification. It is not a pedagogical certification, accessibility certification, security penetration test, legal opinion or guarantee. It demonstrates an engineering audit methodology for checking whether repository evidence supports the technical and product claims being made.
+This case study does not claim that a learning system produces a particular educational outcome, language proficiency level or certification. It demonstrates an engineering audit methodology for checking whether repository evidence supports the technical and product claims being made.
