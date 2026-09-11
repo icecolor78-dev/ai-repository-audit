@@ -36,6 +36,10 @@ def compose_v2(root:Path,repository:str,revision:str,default_branch:str,observed
             'dimension':'external_execution_evidence',
             'detail':'SUPPLIED_EXACT evidence is exact-subject validated but caller-supplied; independent provider retrieval/authentication remains unverified.'
         })
+        for item in portrait.get('runtime_evidence',{}).get('unknowns',[]):
+            row={'dimension':'runtime_evidence','detail':item}
+            if row not in portrait['overall_portrait']['explicit_unknowns']:
+                portrait['overall_portrait']['explicit_unknowns'].append(row)
     portrait['overall_portrait']['statement'] += ' V2 completeness means the 15-domain evidence contract is present; it is not a claim that every domain passed.'
     return portrait
 
