@@ -90,6 +90,67 @@ The review therefore distinguishes “a result exists” from “the result is b
 
 **Evidence expected before PASS:** immutable experiment identity, source revision, data/config identity, runtime/tool version, command or workflow provenance, and an artifact that can be traced back to those inputs.
 
+## Representative finding 6 — Missing cost evidence must stay missing, not become zero
+
+**Severity:** High  
+**Confidence:** High  
+**Audit state:** PASS when accounting fails closed; BLOCK if missing cost data is silently coerced to zero
+
+A subtle but important accounting error is treating unavailable funding, commission or fill evidence as a numeric zero. Zero is an observed economic value. Missing is an evidence state.
+
+A stronger design keeps incomplete accounting explicitly incomplete and prevents downstream profitability or admission logic from treating an unknown cost as if the cost was proven to be zero.
+
+**Evidence expected before PASS:** explicit accounting-completeness state, immutable or reproducible cost receipts, long/short symmetry, one-time commission charging, no duplicate slippage subtraction, and negative tests proving that missing funding or fees cannot manufacture a complete net-PnL result.
+
+## Representative finding 7 — Historical replication is not untouched out-of-sample evidence
+
+**Severity:** High  
+**Confidence:** High  
+**Audit state:** BLOCK if retrospective survivor selection is relabeled as pristine OOS
+
+A later broad experiment may identify a subset of symbols, strategies, regimes or configurations that look interesting. Replaying that selected subset on an earlier historical period can be a useful replication or stress test — but the selection process has already seen information from another historical experiment.
+
+The correct label matters. Calling such a run “untouched OOS” would overstate independence and make the evidence stronger on paper than it is in reality.
+
+**Evidence expected before PASS:** immutable selection provenance, explicit retrospective/replication labeling, frozen train/validation boundaries before outcomes are inspected, no validation-time retuning, disclosed multiple-testing burden, and genuinely future prospective evidence before production admission.
+
+## Representative finding 8 — Engineering readiness is not profitability evidence
+
+**Severity:** High  
+**Confidence:** High  
+**Audit state:** PASS only when the boundary is explicit
+
+A repository can be fully prepared to execute a research protocol: code accepted, tests green, exact revision frozen, data loader verified, workflow guarded, artifacts reproducible and safety gates closed. None of that proves the economic hypothesis itself.
+
+This is an important distinction for AI-assisted systems because automated engineering progress can make a project look “done” while the empirical question remains unanswered.
+
+The evidence audit therefore separates:
+
+- **engineering readiness** — can the intended experiment run reproducibly and safely?;
+- **research result** — what did the experiment actually show?;
+- **admission** — is the evidence strong enough to promote a strategy or policy?;
+- **execution authorization** — is the system allowed to take real financial action?
+
+A PASS in one layer must not silently grant PASS in the next.
+
+## Representative finding 9 — Retrospective and prospective programs need separate truth states
+
+**Severity:** Medium / High  
+**Confidence:** High  
+**Audit state:** BLOCK when evidence from one program is used to satisfy the other
+
+It is common for a mature research repository to contain several evidence programs at once: historical replication, broad screening, prospective collection, holdout confirmation, regime diagnostics and deployment-readiness checks.
+
+The danger is not only statistical. Operational documents, dashboards or agents can accidentally collapse those programs into one status and apply the wrong gate to the wrong experiment.
+
+**Evidence expected before PASS:** distinct experiment identities, separate acceptance criteria, exact-subject provenance, explicit supersession rules and fail-closed handling when the active research track is ambiguous.
+
+## Positive evidence matters too
+
+Evidence-first auditing is not limited to defect discovery. Strong patterns can be worth preserving explicitly. Examples include point-in-time universe selection that rejects future metadata, causal delisting treatment, cost accounting that keeps missing evidence unknown, first-class abstention, exact-revision provenance and safety gates that prevent research success from authorizing execution.
+
+The value of the audit is not to replace those mechanisms, but to determine which claims they actually support and where additional evidence is still required.
+
 ## Why this is deeper than a scanner
 
 A conventional scanner can detect known code patterns. It generally cannot decide whether:
@@ -98,6 +159,9 @@ A conventional scanner can detect known code patterns. It generally cannot decid
 - two differently named strategies are economically the same bet;
 - a green research artifact actually supports the exact revision being claimed;
 - a profitable gross result survives realistic cost assumptions;
+- missing funding was incorrectly converted into zero;
+- a historical replication is being mislabeled as untouched OOS;
+- engineering readiness is being confused with positive economic evidence;
 - the system has enough evidence to trade rather than abstain.
 
 Those questions require tracing claims across architecture, data semantics, tests, generated evidence and decision boundaries.
