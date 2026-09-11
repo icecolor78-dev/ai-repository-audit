@@ -12,6 +12,24 @@ The audit question was therefore not merely “does the application run?” It w
 
 That distinction matters because a documented policy is not evidence that the runtime enforces it.
 
+## Overall Portrait v1 dogfood refresh
+
+The current Audit v1 pipeline was re-applied read-only to a fresh exact revision of this private system. The public result below is intentionally sanitized; source identity, revision, paths and implementation details remain private.
+
+**Repository Evidence Map:** the reviewed subject had a compact Python application surface, explicit architecture/product documentation, a deterministic test surface and one primary pull-request verification workflow. Exact-revision binding was available internally, but is intentionally omitted here.
+
+**CI / Test Depth:** static workflow evidence showed a PR verification path combining lint/static checks, compilation and automated tests. Repository evidence also showed tests spanning core learning state, adaptive behavior, conversation behavior, curriculum/review/session behavior, script bridging, speech boundaries and the local web surface. This supports a meaningful verified-core claim; it does **not** prove real-world learning outcomes or every documented product capability.
+
+**Workflow Security:** the reviewed workflow used scoped read permission. Third-party action references were version-tag based rather than full immutable commit pins, so the static evidence supports a hardening opportunity rather than a vulnerability claim. Live branch-enforcement and exact-run freshness require separate platform evidence and remain distinct from workflow-definition evidence.
+
+**Release / Provenance:** repository-level evidence supported engineering verification and a governed release/readiness process, but the static repository snapshot did not independently prove a packaged end-user release, external distribution result or pedagogical outcome. Those claims remain `UNVERIFIED` unless separately evidenced.
+
+**Claims vs Evidence:** the strongest useful separation remained unchanged: deterministic learning mechanics can be supported by tests while broader claims about mastery quality, pronunciation quality, CEFR outcomes or language-general behavior require evidence at their own semantic level.
+
+**Overall Portrait:** the strongest positive signal was a small, testable, fail-closed core with explicit learning/privacy boundaries. The highest-value remediation direction is to keep expanding evidence from “core mechanics are deterministic” toward “documented product and pedagogical claims are demonstrated independently,” without converting architecture intent into PASS.
+
+This refresh demonstrates the new Overall Portrait layers; it is not a pedagogical certification, security certification, accessibility audit or proof of learning efficacy.
+
 ## What the review examined
 
 Representative review areas included:
