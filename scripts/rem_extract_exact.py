@@ -8,6 +8,7 @@ from pathlib import Path
 from claims_exact import extract_readme_claims
 from exact_subject import bind_exact_subject
 from rem_extract import extract
+from workflow_structured import analyze_workflows
 
 
 def extract_exact(
@@ -20,6 +21,11 @@ def extract_exact(
     portrait = extract(root, repository, revision, default_branch, observed_at)
     portrait["schema_version"] = "rem/v1.1"
     portrait["claims"]["items"] = extract_readme_claims(root)
+    ci, security, release = analyze_workflows(root)
+    portrait["ci"] = ci
+    portrait["security"] = security
+    portrait["release"] = release
+
     binding = bind_exact_subject(root, repository, revision)
     if binding["exact"] is True:
         reason = (
