@@ -45,12 +45,19 @@ for rel in REQUIRED_FILES:
     if not (ROOT / rel).is_file():
         fail(f"required public file missing: {rel}")
 
-for path in TEXT_FILES:
+# Private-system identifiers are a publication concern: scan public Markdown,
+# not this validator's own rule definitions.
+for path in MARKDOWN_FILES:
     text = path.read_text(encoding="utf-8")
     relative = path.relative_to(ROOT)
     for pattern in FORBIDDEN_PUBLIC_PATTERNS:
         if re.search(pattern, text, re.IGNORECASE):
             fail(f"private-system identifier found in {relative}: {pattern}")
+
+# Secret-like material is a repository-wide text concern.
+for path in TEXT_FILES:
+    text = path.read_text(encoding="utf-8")
+    relative = path.relative_to(ROOT)
     for label, pattern in SECRET_PATTERNS.items():
         if pattern.search(text):
             fail(f"possible {label} found in {relative}")
