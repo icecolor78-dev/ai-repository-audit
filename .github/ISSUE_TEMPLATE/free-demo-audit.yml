@@ -1,5 +1,5 @@
 name: Free Demo Audit Request
-description: Request a $0 bounded audit of one public GitHub repository and one exact revision.
+description: Request a $0 bounded review of one public GitHub repository and one exact revision.
 title: "[Free Demo Audit] "
 body:
   - type: markdown
@@ -8,9 +8,12 @@ body:
         ## Free Demo Audit — $0
         Use this form only for a **public GitHub repository**.
 
-        Do not post secrets, tokens, credentials, private source, confidential customer data, or sensitive vulnerability details.
+        The most useful requests are tied to a real decision: an upcoming release, a client handoff, accepting contractor-built code, or another concrete GitHub delivery question.
 
-        The demo is limited to one exact revision and up to three findings/observations. It is not a penetration test, certification, compliance attestation, or security guarantee.
+        Do not post secrets, tokens, credentials, private source, confidential customer data, private repository information, or sensitive vulnerability details.
+
+        The demo is limited to one exact revision and up to three findings/observations. It is not a penetration test, certification, compliance attestation, release authorization, or security guarantee.
+
   - type: input
     id: repository_url
     attributes:
@@ -19,6 +22,7 @@ body:
       placeholder: https://github.com/owner/repository
     validations:
       required: true
+
   - type: input
     id: revision
     attributes:
@@ -27,37 +31,85 @@ body:
       placeholder: 40-character commit SHA or tag
     validations:
       required: false
+
+  - type: dropdown
+    id: decision_context
+    attributes:
+      label: What is happening around this review?
+      description: Choose the closest public context. This does not automatically qualify the request for paid work.
+      options:
+        - Upcoming release
+        - Client / project handoff
+        - Accepting contractor-built or inherited code
+        - CI / release process change
+        - General repository review
+        - Other public context
+    validations:
+      required: true
+
+  - type: textarea
+    id: decision
+    attributes:
+      label: What decision are you trying to make?
+      description: State the concrete public question you want the audit to help answer. Do not include confidential information.
+      placeholder: "Example: Before we hand this version to a client, I want to know whether the available CI/release evidence actually belongs to the revision being delivered."
+    validations:
+      required: true
+
+  - type: input
+    id: timing
+    attributes:
+      label: When does this decision become relevant? (optional)
+      description: A simple public timing phrase is enough. Do not disclose confidential project dates.
+      placeholder: e.g. this week, before the next public release, no fixed date
+    validations:
+      required: false
+
   - type: dropdown
     id: concern
     attributes:
       label: Main concern
       options:
         - CI / test confidence
+        - Release / source-to-artifact evidence
+        - Project handoff / contractor acceptance
         - Security / authorization boundaries
         - Architecture / maintainability
         - AI-generated or AI-assisted changes
-        - Release readiness
         - General repository baseline
     validations:
       required: true
+
+  - type: textarea
+    id: public_evidence
+    attributes:
+      label: Relevant public evidence links (optional)
+      description: Public GitHub workflow runs, releases, attestations, or other public links that matter to the decision. Do not post private evidence.
+      placeholder: One public link per line, if any.
+    validations:
+      required: false
+
   - type: textarea
     id: context
     attributes:
-      label: Public context
-      description: Optional public context or question. Do not include confidential information.
-      placeholder: What are you most uncertain about in this repository?
+      label: Additional public context (optional)
+      description: Anything else that changes how the public review should be scoped. Do not include confidential information.
+      placeholder: Public context only.
     validations:
       required: false
+
   - type: checkboxes
     id: acknowledgements
     attributes:
       label: Safety and scope acknowledgement
       options:
-        - label: I confirm the repository is public and this request contains no secrets, credentials, private source, or confidential data.
+        - label: I confirm the repository is public and this request contains no secrets, credentials, private source, private repository information, or confidential data.
           required: true
         - label: I understand the free demo is limited to one exact revision and up to three findings/observations with no remediation included.
           required: true
-        - label: I understand this is not a penetration test, certification, compliance attestation, or security/defect-free guarantee.
+        - label: I understand missing evidence may remain UNVERIFIED and does not automatically mean a vulnerability or defect exists.
+          required: true
+        - label: I understand this is not a penetration test, certification, compliance attestation, release authorization, or security/defect-free guarantee.
           required: true
         - label: I understand the Free Demo Audit costs $0 and does not represent a paid engagement or collected revenue.
           required: true
