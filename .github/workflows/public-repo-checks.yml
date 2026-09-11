@@ -25,6 +25,8 @@ jobs:
         run: python scripts/validate_public_repo.py
       - name: Verify exact subject binding
         run: python scripts/test_exact_subject.py
+      - name: Verify exact-bound REM extraction
+        run: python scripts/test_rem_extract_exact.py
       - name: Verify REM extractor
         run: python scripts/test_rem_extract.py
       - name: Verify Wave A assurance extraction
