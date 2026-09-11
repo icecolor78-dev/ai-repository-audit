@@ -1,10 +1,10 @@
 from pathlib import Path
 import re
-import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_FILES = [
+    "AGENTS.md",
     "README.md",
     "FAQ.md",
     "FREE_DEMO_AUDIT.md",
@@ -12,6 +12,7 @@ REQUIRED_FILES = [
     "SAMPLE_AUDIT.md",
     "SECURITY.md",
     "CASE_STUDY_QUANT_SYSTEM.md",
+    "CASE_STUDY_LANGUAGE_LEARNING.md",
 ]
 
 FORBIDDEN_PUBLIC_PATTERNS = [
@@ -19,7 +20,20 @@ FORBIDDEN_PUBLIC_PATTERNS = [
     r"icecolor78-dev/AI-Trading-bot",
 ]
 
-MARKDOWN_FILES = list(ROOT.glob("*.md"))
+SECRET_PATTERNS = {
+    "private key": re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----"),
+    "GitHub token": re.compile(r"\b(?:gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,})\b"),
+    "AWS access key": re.compile(r"\bAKIA[0-9A-Z]{16}\b"),
+    "Slack token": re.compile(r"\bxox[baprs]-[A-Za-z0-9-]{10,}\b"),
+}
+
+TEXT_SUFFIXES = {".md", ".py", ".yml", ".yaml", ".txt", ".json", ".toml"}
+TEXT_FILES = [
+    path
+    for path in ROOT.rglob("*")
+    if path.is_file() and path.suffix.lower() in TEXT_SUFFIXES and ".git" not in path.parts
+]
+MARKDOWN_FILES = [path for path in TEXT_FILES if path.suffix.lower() == ".md"]
 
 
 def fail(message: str) -> None:
@@ -31,13 +45,24 @@ for rel in REQUIRED_FILES:
     if not (ROOT / rel).is_file():
         fail(f"required public file missing: {rel}")
 
+# Private-system identifiers are a publication concern: scan public Markdown,
+# not this validator's own rule definitions.
 for path in MARKDOWN_FILES:
     text = path.read_text(encoding="utf-8")
+    relative = path.relative_to(ROOT)
     for pattern in FORBIDDEN_PUBLIC_PATTERNS:
         if re.search(pattern, text, re.IGNORECASE):
-            fail(f"private-system identifier found in {path.name}: {pattern}")
+            fail(f"private-system identifier found in {relative}: {pattern}")
 
-# Validate repository-relative Markdown links to local .md files.
+# Secret-like material is a repository-wide text concern.
+for path in TEXT_FILES:
+    text = path.read_text(encoding="utf-8")
+    relative = path.relative_to(ROOT)
+    for label, pattern in SECRET_PATTERNS.items():
+        if pattern.search(text):
+            fail(f"possible {label} found in {relative}")
+
+# Validate repository-relative Markdown links to local files.
 link_pattern = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 for path in MARKDOWN_FILES:
     text = path.read_text(encoding="utf-8")
@@ -51,8 +76,8 @@ for path in MARKDOWN_FILES:
         try:
             candidate.relative_to(ROOT)
         except ValueError:
-            fail(f"link escapes repository in {path.name}: {target}")
+            fail(f"link escapes repository in {path.relative_to(ROOT)}: {target}")
         if not candidate.exists():
-            fail(f"broken local link in {path.name}: {target}")
+            fail(f"broken local link in {path.relative_to(ROOT)}: {target}")
 
 print("public repository checks passed")
