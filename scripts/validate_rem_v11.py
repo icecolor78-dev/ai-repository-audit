@@ -8,10 +8,16 @@ from jsonschema import Draft202012Validator, FormatChecker
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = ROOT / "schemas" / "rem-v1.1.schema.json"
 DIMENSIONS = ("ci", "tests", "security", "release", "supply_chain", "provenance")
+NON_PROBATIVE_SUPPORTS = {"subject", "claim-source", "public claims"}
 
 
 class EvidenceContractError(ValueError):
     pass
+
+
+def _probative_for_verified(source: dict) -> bool:
+    supports = {str(item).strip().casefold() for item in source.get("supports", []) if str(item).strip()}
+    return bool(supports - NON_PROBATIVE_SUPPORTS)
 
 
 def validate_document(data: dict) -> None:
@@ -54,6 +60,10 @@ def validate_document(data: dict) -> None:
         if claim["state"] == "VERIFIED":
             if not claim["supporting_refs"]:
                 raise EvidenceContractError("VERIFIED claim requires supporting evidence")
+            if claim["contradicting_refs"]:
+                raise EvidenceContractError("VERIFIED claim cannot retain contradicting evidence")
+            if claim["source_ref"] in claim["supporting_refs"]:
+                raise EvidenceContractError("VERIFIED claim cannot self-support from its claim source")
             for ref in claim["supporting_refs"]:
                 source = sources[ref]
                 if source["subject_revision"] != subject_revision:
@@ -62,6 +72,10 @@ def validate_document(data: dict) -> None:
                     raise EvidenceContractError("VERIFIED claim requires exact evidence")
                 if source["access"]["state"] != "accessible":
                     raise EvidenceContractError("VERIFIED claim requires accessible evidence")
+                if not _probative_for_verified(source):
+                    raise EvidenceContractError("VERIFIED claim requires probative evidence, not subject/claim-source metadata")
+        if claim["state"] == "CONTRADICTED" and not claim["contradicting_refs"]:
+            raise EvidenceContractError("CONTRADICTED claim requires contradicting evidence")
         if claim["state"] == "NOT_APPLICABLE" and not claim["notes"].strip():
             raise EvidenceContractError("NOT_APPLICABLE claim requires rationale")
 
