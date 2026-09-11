@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 KINDS = {
@@ -9,6 +10,25 @@ KINDS = {
     "security": "security", "compat": "compatibility", "migration": "migration",
     "benchmark": "performance", "performance": "performance", "release": "release-artifact",
 }
+TEST_FILE = re.compile(r"(?:^|/)(?:test[s]?|spec[s]?|__tests__)(?:/|$)|(?:^|/)(?:test_|.*[._-](?:test|spec)\.)", re.I)
+TEST_CONFIG_NAMES = {
+    "pytest.ini", "tox.ini", "noxfile.py", "jest.config.js", "jest.config.ts",
+    "vitest.config.js", "vitest.config.ts", "playwright.config.js", "playwright.config.ts",
+    "cypress.config.js", "cypress.config.ts",
+}
+
+
+def _is_test_evidence(path: Path, rp: str) -> bool:
+    if path.name.casefold() in TEST_CONFIG_NAMES:
+        return True
+    if not TEST_FILE.search(rp):
+        return False
+    # Avoid classifying arbitrary documentation/data files such as tests/spec.txt as executable suites.
+    return path.suffix.casefold() in {
+        ".py", ".js", ".jsx", ".ts", ".tsx", ".rs", ".go", ".java", ".kt",
+        ".rb", ".php", ".cs", ".cpp", ".cc", ".c", ".swift", ".scala", ".sh",
+        ".yaml", ".yml", ".toml", ".json",
+    } or path.name.casefold() in TEST_CONFIG_NAMES
 
 
 def profile_tests(root: Path) -> dict:
@@ -18,7 +38,7 @@ def profile_tests(root: Path) -> dict:
     for path in sorted(p for p in root.rglob("*") if p.is_file() and ".git" not in p.parts):
         rp = path.relative_to(root).as_posix()
         low = rp.casefold()
-        if not any(token in low for token in ("test", "spec", "__tests__")):
+        if not _is_test_evidence(path, rp):
             continue
         suites.append(rp)
         found = False
@@ -27,9 +47,12 @@ def profile_tests(root: Path) -> dict:
                 kinds.add(kind)
                 found = True
         if not found:
-            kinds.add("unit/unspecified")
+            kinds.add("unspecified")
         parts = Path(rp).parts
-        area = parts[1] if len(parts) > 2 and parts[0] in {"tests", "test"} else "repository"
+        if parts and parts[0] in {"tests", "test", "spec", "specs", "__tests__"}:
+            area = parts[1] if len(parts) > 2 else "repository"
+        else:
+            area = "repository"
         subsystem.append(f"{area}: {rp}")
     return {
         "suites": suites,
@@ -37,5 +60,7 @@ def profile_tests(root: Path) -> dict:
         "subsystem_map": subsystem,
         "exact_subject_execution": [],
         "confidence": "PARTIAL" if suites else "UNVERIFIED",
-        "unknowns": ["test discovery is complete for repository-visible paths but does not prove exact-subject execution or semantic coverage"],
+        "unknowns": [
+            "repository-visible test/config discovery does not prove execution, suite membership, matrix coverage, assertions, or semantic completeness"
+        ],
     }
