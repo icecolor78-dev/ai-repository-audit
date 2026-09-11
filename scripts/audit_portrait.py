@@ -44,12 +44,14 @@ def bind_claims(rem):
         elif "tests" in c and rem["tests"]["suites"]: refs=["test files/configuration"]
         elif "release" in c and rem["release"]["workflows"]: refs=["release workflow definitions"]
         elif "security" in c and rem["security"]["signals"]: refs=["workflow-security static signals"]
-        if refs:
-            item["state"]="PARTIAL"; item["supporting_refs"]=refs; item["notes"]="Repository evidence supports part of the claim, but runtime/external proof remains required."
+        if refs and item.get("state") == "UNVERIFIED":
+            item["state"]="PARTIAL"
+            item["notes"]="Repository evidence supports part of the claim, but runtime/external proof remains required."
     return rem
 
-def compose(root:Path, repository:str, revision:str, default_branch:str, observed_at:str):
-    rem=bind_claims(extract(root,repository,revision,default_branch,observed_at)); all_files=rows(root); supply,arch,ops,gov,maint=static_layers(root,all_files)
+def compose(root:Path, repository:str, revision:str, default_branch:str, observed_at:str, base_rem:dict|None=None):
+    rem=base_rem if base_rem is not None else bind_claims(extract(root,repository,revision,default_branch,observed_at))
+    all_files=rows(root); supply,arch,ops,gov,maint=static_layers(root,all_files)
     rem["supply_chain"].update(supply); rem["architecture"]=arch; rem["operability"]=ops; rem["governance"]=gov; rem["maintainability"]=maint
     rem.update(extract_wave_a(root)); rem.update(extract_wave_b(root)); rem.update(extract_wave_c(root)); rem.update(extract_wave_d(root))
     findings=[]
@@ -64,23 +66,6 @@ def compose(root:Path, repository:str, revision:str, default_branch:str, observe
     if any(f["kind"]=="mutable_action_ref" for f in findings): remediation.append({"priority":"P1","action":"Pin third-party GitHub Actions to reviewed full commit SHAs where operationally appropriate.","verification":"Re-extract exact subject and verify mutable-ref signals are resolved or explicitly accepted."})
     if any(f["kind"]=="untrusted_expression_shell" for f in findings): remediation.append({"priority":"P0","action":"Move event-derived values out of direct shell interpolation and validate/quote through environment or structured inputs.","verification":"Review exact workflow and run bounded security regression fixtures."})
     if rem["inventory"]["manifests"] and not rem["inventory"]["lockfiles"]: remediation.append({"priority":"P2","action":"Confirm ecosystem reproducibility policy and add/justify lock or equivalent immutable dependency resolution evidence.","verification":"Re-extract dependency evidence and run reproducible install/build check."})
-    domain_actions={
-      "threat_model":("Review evidence-backed STRIDE hypotheses against real assets, trust boundaries and mitigations; keep unsupported categories UNVERIFIED.","Bind each accepted threat/mitigation to exact-subject design, test or runtime evidence."),
-      "data_privacy":("Build an explicit data-flow inventory for observed personal/customer-data signals, including logging, retention, deletion/export and encryption boundaries.","Trace representative data classes end-to-end and attach execution/policy evidence where static evidence is insufficient."),
-      "agent_safety":("Verify untrusted-content-to-tool paths, action authority, confirmation gates and loop/budget controls with bounded adversarial tests.","Attach exact-subject prompt-injection/tool-authority regression evidence; do not infer runtime safety from code presence."),
-      "identity_access":("Map authentication, authorization, scopes/service identities and tenant boundaries separately.","Run negative authorization and cross-tenant tests where applicable; static configuration alone remains PARTIAL."),
-      "resilience":("Exercise observed retry/timeout/idempotency/dependency-failure paths under bounded fault injection.","Attach exact-subject failure-injection evidence for timeout, partial outage, duplicate delivery and recovery."),
-      "incident_readiness":("Verify backup restore, rollback, kill-switch and incident-runbook claims with dated operational evidence.","Perform bounded restore/rollback exercises and bind measured recovery evidence to claimed RTO/RPO where applicable."),
-      "auditability_forensics":("Verify actor attribution, correlation IDs and forensic event continuity across representative state changes.","Reconstruct a bounded incident/change from durable evidence and explicitly test tamper-resistance claims where made."),
-      "model_eval":("Freeze evaluation subjects and verify leakage controls, grader reliability, error taxonomy and model-version regression evidence.","Run exact-subject eval suites with provenance and compare against frozen baselines."),
-      "finops":("Bound observable cost drivers, retries, loops, token/API/storage/log usage and provider-specific amplification risks.","Attach measured usage/cost evidence under representative workloads; static estimates stay PARTIAL."),
-      "configuration":("Map required configuration, defaults, fallbacks, feature flags and environment-specific assumptions.","Verify representative environment matrices and dangerous-default negative cases."),
-      "concurrency":("Verify transaction, lock, worker, webhook and deduplication assumptions under concurrent execution.","Run race/duplicate/idempotency tests with exact-subject evidence where applicable."),
-      "migration":("Map schema changes, backfills, rollback/irreversibility and forward/backward compatibility assumptions.","Run migration upgrade/downgrade and compatibility tests on representative data snapshots."),
-      "interface":("Map producer/consumer contracts and versioning across observable APIs/events/schemas.","Run compatibility/contract tests across exact producer and consumer revisions; static schemas alone remain PARTIAL."),
-      "license_ip":("Inventory licenses, attribution and source-origin/provenance signals for dependencies, copied/generated code and assets.","Perform bounded legal/license review where required; repository heuristics alone are not legal clearance.")}
-    for section,(action,verification) in domain_actions.items():
-        if rem[section]["signals"]: remediation.append({"priority":"P1","action":action,"verification":verification})
     verdict="HOLD" if any(f["severity"]=="HIGH" for f in findings) else "BOUNDED_REVIEW"
     rem["overall_portrait"]={"verdict":verdict,"verdict_scope":"static repository evidence only","findings":findings,"claims":rem["claims"]["items"],"explicit_unknowns":unknowns,"remediation":remediation,"confidence":"PARTIAL","statement":"This portrait summarizes exact-subject repository evidence. It is not a penetration test, certification, compliance or legal opinion, production-runtime proof, privacy guarantee, prompt-injection guarantee, tenant-isolation proof, resilience/SLA proof, disaster-recovery attestation, AI quality guarantee, cost guarantee, race-freedom proof, migration-safety proof, cross-service compatibility proof, IP clearance, or guarantee of defect/vulnerability absence."}
     rem["coverage"]["dimensions"] += ["supply-chain static evidence","architecture/change-impact signals","operability signals","governance signals","maintainability signals","claims/evidence binding","threat-model evidence","data-privacy evidence","agent-safety evidence","identity/access evidence","resilience evidence","incident-readiness evidence","external-dependency-failure evidence","auditability/forensics evidence","model-eval evidence","finops evidence","configuration evidence","concurrency evidence","migration evidence","interface evidence","license/IP evidence","Overall Repository Portrait"]
