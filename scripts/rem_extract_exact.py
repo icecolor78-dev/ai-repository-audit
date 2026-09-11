@@ -5,7 +5,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from claims_exact import extract_readme_claims
+from claims_exact import extract_readme_claims, selected_readme
 from exact_subject import bind_exact_subject, exact_tree_snapshot
 from rem_extract import extract
 from test_depth_exact import profile_tests
@@ -37,6 +37,23 @@ def build_exact_rem(
         "verified immutable Git-tree subject; "
         f"tree={binding['git_tree']}; manifest={binding['content_manifest']}"
     )
+
+    readme = selected_readme(scan_root)
+    if portrait["claims"]["items"] and not any(source.get("id") == "readme" for source in portrait["sources"]):
+        if readme is None:
+            raise EvidenceContractError("README claim source disappeared during exact extraction")
+        portrait["sources"].append({
+            "id": "readme",
+            "kind": "repository_file",
+            "subject_revision": revision,
+            "locator": readme.name,
+            "observed_at": observed_at,
+            "freshness": {"state": "exact", "reason": reason},
+            "access": {"state": "accessible"},
+            "supports": ["claim-source"],
+            "limits": ["documentation text is a claim source and does not prove its own claims"],
+        })
+
     for source in portrait["sources"]:
         source["freshness"] = {"state": "exact", "reason": reason}
         if source["kind"] == "repository_file":
